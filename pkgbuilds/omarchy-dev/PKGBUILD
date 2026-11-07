@@ -115,7 +115,7 @@ package() {
     local base
     base=$(basename "$bin")
     case "$base" in
-      collie-debug|collie-debug-idle|collie-upload-log|collie-sudo-passwordless|omarchy-security-functions)
+      collie-debug|collie-debug-idle|collie-upload-log|collie-sudo-passwordless|collie-security-functions)
         continue
         ;;
     esac

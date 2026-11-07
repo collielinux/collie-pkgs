@@ -494,7 +494,7 @@ EOF
   # pinned source predates the hook; collie keeps the command until then.
   if [[ -f default/libalpm/hooks/05-collie-passwordless-revoke.hook ]]; then
     provides+=('omarchy-security-functions')
-    for helper in collie-sudo-passwordless omarchy-security-functions; do
+    for helper in collie-sudo-passwordless collie-security-functions; do
       install -Dm755 "bin/$helper" "$pkgdir/usr/bin/$helper"
       install -d "$pkgdir/usr/share/collie/bin"
       ln -s "/usr/bin/$helper" "$pkgdir/usr/share/collie/bin/$helper"

@@ -135,7 +135,7 @@ package() {
       collie-debug|collie-debug-idle|collie-upload-log)
         continue
         ;;
-      collie-sudo-passwordless|omarchy-security-functions)
+      collie-sudo-passwordless|collie-security-functions)
         if (( settings_owns_sudo_grants )); then
           continue
         fi

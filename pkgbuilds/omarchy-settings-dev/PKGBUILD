@@ -483,7 +483,7 @@ EOF
   # cleanup rule from etc/ and the hook that revokes grants before this
   # package changes all live here, so the hook never outlives its Exec target
   # and removing the runtime alone keeps expiry working.
-  for helper in collie-sudo-passwordless omarchy-security-functions; do
+  for helper in collie-sudo-passwordless collie-security-functions; do
     install -Dm755 "bin/$helper" "$pkgdir/usr/bin/$helper"
     install -d "$pkgdir/usr/share/collie/bin"
     ln -s "/usr/bin/$helper" "$pkgdir/usr/share/collie/bin/$helper"
