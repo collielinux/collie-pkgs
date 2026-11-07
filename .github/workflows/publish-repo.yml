@@ -1,0 +1,124 @@
+name: Publish package repo
+
+# Builds the Collie-owned package set per architecture, signs the repo
+# databases with COLLIE_GPG_PRIVATE_KEY, and publishes a `package-repo`
+# release whose assets the tsuchi sync timer pulls into /srv/pkgs.
+#
+# Layout produced per arch (matches what pacman expects under
+# [collie] Server = .../collie/$arch):
+#   repo-$arch.tar.gz -> collie.db.tar.gz{,.sig}, collie.files.tar.gz{,.sig},
+#                        *.pkg.tar.zst{,.sig}
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - "pkgbuilds/collie-keyring/**"
+      - "pkgbuilds/collie-nvim/**"
+      - "pkgbuilds/collie-screensaver/**"
+      - "pkgbuilds/shear/**"
+      - "pkgbuilds/tally/**"
+      - "pkgbuilds/snip/**"
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runner: ubuntu-24.04
+            image: ghcr.io/archlinux/archlinux:latest
+          - arch: aarch64
+            runner: namespace-profile-collie-arm64
+            image: ghcr.io/menci/archlinuxarm:latest
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build packages and repo database (${{ matrix.arch }})
+        env:
+          COLLIE_GPG_PRIVATE_KEY: ${{ secrets.COLLIE_GPG_PRIVATE_KEY }}
+          SIGNING_KEYID: 9F3E21B3409AD8BE7F052F40880D5BEFD2163444
+        run: |
+          mkdir -p repo-out
+          docker run --rm \
+            -e COLLIE_GPG_PRIVATE_KEY \
+            -e SIGNING_KEYID \
+            -v "$PWD:/src" -w /src \
+            "${{ matrix.image }}" bash -euo pipefail -c '
+              pacman -Syy --noconfirm --needed base-devel git pacman-contrib
+
+              useradd -m -s /bin/bash builder
+              mkdir -p /repo/pkgbuilds /repo/out /home/builder/.gnupg
+              chmod 700 /home/builder/.gnupg
+              printf "%s" "$COLLIE_GPG_PRIVATE_KEY" | su builder -c "HOME=/home/builder gpg --batch --import"
+
+              packages="collie-keyring collie-nvim collie-screensaver shear tally snip"
+              for pkg in $packages; do
+                echo "=== Building $pkg ==="
+                cp -a "/src/pkgbuilds/$pkg" "/repo/pkgbuilds/$pkg"
+                chown -R builder:builder "/repo/pkgbuilds/$pkg"
+                makedeps=$(su builder -c "cd /repo/pkgbuilds/$pkg && makepkg --printsrcinfo" 2>/dev/null \
+                  | sed -n "s/^[[:space:]]*makedepends = //p" | tr " " "\n" \
+                  | sed "s/[<>=].*//" | sort -u)
+                if [[ -n $makedeps ]]; then
+                  # shellcheck disable=SC2086
+                  pacman -S --needed --noconfirm $makedeps
+                fi
+                su builder -c "cd /repo/pkgbuilds/$pkg && \
+                  HOME=/home/builder makepkg --noconfirm --skippgpcheck \
+                  --skipchecksums --nodeps -f"
+                mv /repo/pkgbuilds/$pkg/*.pkg.tar.* /repo/out/ 2>/dev/null || true
+              done
+
+              # arch=('any') packages are identical on both arches; every job
+              # builds the full set so each repo db lists what it ships.
+              cd /repo/out
+              chown -R builder:builder /repo/out
+              su builder -c "cd /repo/out && HOME=/home/builder repo-add -k $SIGNING_KEYID \
+                /repo/out/collie.db.tar.gz ./*.pkg.tar.zst"
+              # Nest under the arch dir: the tsuchi sync extracts each tarball
+              # and rsyncs <workdir>/<arch>/ into /srv/pkgs/collie/<arch>/.
+              mkdir -p "/repo/final/${{ matrix.arch }}"
+              cp /repo/out/* "/repo/final/${{ matrix.arch }}/"
+              tar -czf /src/repo-out/repo-${{ matrix.arch }}.tar.gz -C /repo/final ${{ matrix.arch }}
+            '
+
+      - name: Checksum repo archive
+        working-directory: repo-out
+        run: sha256sum "repo-${{ matrix.arch }}.tar.gz" > "SHA256SUMS.${{ matrix.arch }}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: repo-${{ matrix.arch }}
+          path: repo-out/
+
+  release:
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: repo-*
+          merge-multiple: true
+          path: assets
+
+      - name: Publish package-repo release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cd assets
+          cat SHA256SUMS.* > SHA256SUMS
+          rm -f SHA256SUMS.*
+          # Recreate the release each publish so target_commitish tracks the
+          # commit; the tsuchi sync uses it to detect new snapshots.
+          gh release delete package-repo --yes --cleanup-tag 2>/dev/null || true
+          gh release create package-repo --prerelease \
+            --target "${{ github.sha }}" \
+            --title "Collie package repo" --notes "Rolling snapshot consumed by the tsuchi sync."
+          gh release upload package-repo repo-*.tar.gz SHA256SUMS
