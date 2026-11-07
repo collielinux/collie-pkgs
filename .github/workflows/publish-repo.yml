@@ -61,8 +61,11 @@ jobs:
                 echo "=== Building $pkg ==="
                 cp -a "/src/pkgbuilds/$pkg" "/repo/pkgbuilds/$pkg"
                 chown -R builder:builder "/repo/pkgbuilds/$pkg"
+                # depends too: collie-nvim needs neovim at build time and it
+                # lives in depends, not makedepends. optdepends/checkdepends
+                # are excluded by the anchored alternation.
                 makedeps=$(su builder -c "cd /repo/pkgbuilds/$pkg && makepkg --printsrcinfo" 2>/dev/null \
-                  | sed -n "s/^[[:space:]]*makedepends = //p" | tr " " "\n" \
+                  | sed -n "s/^[[:space:]]*\(makedepends\|depends\) = //p" | tr " " "\n" \
                   | sed "s/[<>=].*//" | sort -u)
                 if [[ -n $makedeps ]]; then
                   # shellcheck disable=SC2086
