@@ -1,11 +1,11 @@
 # Maintainer: Tobi Lütke <tobi@lutke.com>
 
-pkgname=colliesnap
+pkgname=snip
 pkgver=1.25.0
 pkgrel=1
 pkgdesc="Native Wayland screenshot and annotation overlay for Hyprland"
 arch=('x86_64' 'aarch64')
-url="https://github.com/collielinux/colliesnap"
+url="https://github.com/collielinux/snip"
 license=('MIT' 'OFL-1.1')
 depends=(
   'hyprland'
@@ -42,14 +42,14 @@ check() {
   local runtime_dir status started
   started=$(date +%s%N); sync
   echo "flushed dirty pages in $(( ($(date +%s%N) - started) / 1000000 )) ms"
-  runtime_dir=$(mktemp -d /dev/shm/omasnap-runtime.XXXXXX)
+  runtime_dir=$(mktemp -d /dev/shm/snip-runtime.XXXXXX)
   if QT_QPA_PLATFORM=offscreen QT_FORCE_STDERR_LOGGING=1 \
     XDG_RUNTIME_DIR="$runtime_dir" \
-    ./build/omasnap-smoke --output-dir "$srcdir/omasnap-smoke-output"; then
+    ./build/snip-smoke --output-dir "$srcdir/snip-smoke-output"; then
     status=0
   else
     status=$?
-    echo "omasnap-smoke exited with status $status" >&2
+    echo "snip-smoke exited with status $status" >&2
   fi
   rm -r -- "$runtime_dir"
   return "$status"

@@ -1,13 +1,13 @@
 # Maintainer: David Heinemeier Hansson <david@hey.com>
 
-pkgname=colliecalc
+pkgname=tally
 pkgver=0.3.1
 pkgrel=1
 pkgdesc='Dead-simple calculator built with Qt Quick'
 arch=('x86_64' 'aarch64')
-url='https://github.com/omacom-io/omacalc'
+url='https://github.com/collielinux/tally'
 license=('MIT' 'OFL-1.1')
-install='omacalc.install'
+install='tally.install'
 options=('!debug')
 depends=(
   'hicolor-icon-theme'
@@ -32,9 +32,9 @@ build() {
 package() {
   cd "$srcdir/$pkgname-$pkgver"
 
-  install -Dm755 build/omacalc "$pkgdir/usr/bin/omacalc"
+  install -Dm755 build/tally "$pkgdir/usr/bin/tally"
   install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
   install -Dm644 fonts/OFL.txt "$pkgdir/usr/share/licenses/$pkgname/OFL.txt"
-  install -Dm644 pkgbuild/omacalc.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/omacalc.svg"
-  install -Dm644 pkgbuild/omacalc.desktop "$pkgdir/usr/share/applications/omacalc.desktop"
+  install -Dm644 pkgbuild/tally.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/tally.svg"
+  install -Dm644 pkgbuild/tally.desktop "$pkgdir/usr/share/applications/tally.desktop"
 }
