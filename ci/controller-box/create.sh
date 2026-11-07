@@ -8,7 +8,7 @@
 set -euo pipefail
 here=$(dirname "$0")
 : "${DIGITALOCEAN_TOKEN:?}" "${GITHUB_TOKEN:?}"
-REPO=${REPO:-omacom/omarchy-pkgs}
+REPO=${REPO:-collielinux/collie-pkgs}
 BRANCH=${1:-master}
 REGION=${REGION:-ric1}
 NAME=${NAME:-omarchy-controller}

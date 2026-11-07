@@ -1,5 +1,5 @@
 # Maintainer: Shun Li <riverscn@gmail.com>
-# Extracted from omacom/omarchy-pkgs PR #240, revision dcef132b2df11bb762e233ea8c6af3110f079b67.
+# Extracted from collielinux/collie-pkgs PR #240, revision dcef132b2df11bb762e233ea8c6af3110f079b67.
 
 pkgname=obsidian
 pkgver=1.15.0

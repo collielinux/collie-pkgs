@@ -327,14 +327,14 @@ for (const [name, overrides] of [
 test('only same-repository sync branches queue behind an in-flight build', () => {
   const expression = workflow.match(/^  cancel-in-progress: \$\{\{(.*)\}\}$/m)[1];
   const cancels = (repo, ref) => new Function('github', 'startsWith', `return (${expression})`)(
-    { repository: 'omacom/omarchy-pkgs', head_ref: ref,
+    { repository: 'collielinux/collie-pkgs', head_ref: ref,
       event: { pull_request: { head: { repo: { full_name: repo } } } } },
     (text, prefix) => text.startsWith(prefix));
-  assert.equal(cancels('omacom/omarchy-pkgs', 'auto/sync-upstream'), false);
-  assert.equal(cancels('omacom/omarchy-pkgs', 'auto/sync-upstream-ttfx'), false);
-  assert.equal(cancels('omacom/omarchy-pkgs', 'auto/sync-rebuilds'), false);
-  assert.equal(cancels('omacom/omarchy-pkgs', 'auto/track-branches-omarchy-dev-omarchy-settings-dev'), false);
-  assert.equal(cancels('omacom/omarchy-pkgs', 'ttfx/fix'), true);
+  assert.equal(cancels('collielinux/collie-pkgs', 'auto/sync-upstream'), false);
+  assert.equal(cancels('collielinux/collie-pkgs', 'auto/sync-upstream-ttfx'), false);
+  assert.equal(cancels('collielinux/collie-pkgs', 'auto/sync-rebuilds'), false);
+  assert.equal(cancels('collielinux/collie-pkgs', 'auto/track-branches-omarchy-dev-omarchy-settings-dev'), false);
+  assert.equal(cancels('collielinux/collie-pkgs', 'ttfx/fix'), true);
   assert.equal(cancels('someone/omarchy-pkgs', 'auto/sync-upstream'), true);
   assert.equal(cancels(undefined, ''), true); // workflow_dispatch
 });
@@ -402,19 +402,19 @@ test('package PRs split per package and keep branch siblings together', () => {
     const branch = { git_branch: 'https://github.com/omacom/omarchy.git', branch: 'quattro' };
     write('omarchy-dev', branch);
     write('omarchy-settings-dev', branch);
-    write('omasnap-git', { git_branch: 'https://github.com/omacom/omasnap.git', branch: 'main' });
+    write('colliesnap-git', { git_branch: 'https://github.com/collielinux/colliesnap.git', branch: 'main' });
     write('zed', { github: 'zed-industries/zed' });
     write('untouched', { github: 'x/y' });
     git('add', '.');
     git('commit', '-qm', 'base');
-    for (const name of ['omarchy-dev', 'omarchy-settings-dev', 'omasnap-git', 'zed']) {
+    for (const name of ['omarchy-dev', 'omarchy-settings-dev', 'colliesnap-git', 'zed']) {
       writeFileSync(join(dir, 'pkgbuilds', name, 'PKGBUILD'), `pkgname=${name}\npkgver=2\npkgrel=1\n`);
     }
     const patch = join(dir, 'pins.patch');
     const groups = JSON.parse(execFileSync(groupsScript, ['auto/track-branches', patch], { cwd: dir, encoding: 'utf8' }));
     assert.deepEqual(groups, [
       { branch: 'auto/track-branches-omarchy-dev-omarchy-settings-dev', packages: 'omarchy-dev omarchy-settings-dev' },
-      { branch: 'auto/track-branches-omasnap-git', packages: 'omasnap-git' },
+      { branch: 'auto/track-branches-colliesnap-git', packages: 'colliesnap-git' },
       { branch: 'auto/track-branches-zed', packages: 'zed' },
     ]);
     assert.match(readFileSync(patch, 'utf8'), /pkgbuilds\/zed\/PKGBUILD/);
@@ -426,7 +426,7 @@ test('package PRs split per package and keep branch siblings together', () => {
 });
 
 const { decide } = require('../.github/scripts/auto-merge-pr.cjs');
-const repository = 'omacom/omarchy-pkgs';
+const repository = 'collielinux/collie-pkgs';
 const mergeable = (overrides = {}) => ({
   state: 'open', draft: false, labels: [],
   head: { ref: 'superwhisper-bin', repo: { full_name: repository } }, ...overrides,

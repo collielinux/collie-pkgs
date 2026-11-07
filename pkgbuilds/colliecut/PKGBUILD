@@ -1,11 +1,11 @@
 # Maintainer: David Heinemeier Hansson <david@hey.com>
 
-pkgname=omacut
+pkgname=colliecut
 pkgver=0.7.2
 pkgrel=1
 pkgdesc='Dead-simple video length trimmer built with Qt Quick and ffmpeg'
 arch=('x86_64' 'aarch64')
-url='https://github.com/omacom/omacut'
+url='https://github.com/collielinux/colliecut'
 license=('MIT')
 install='omacut.install'
 options=('!debug')
@@ -24,7 +24,7 @@ makedepends=(
   'qt6-declarative'
   'qt6-multimedia'
 )
-source=("$pkgname-$pkgver.tar.gz::https://github.com/omacom/omacut/archive/refs/tags/v$pkgver.tar.gz")
+source=("$pkgname-$pkgver.tar.gz::https://github.com/collielinux/colliecut/archive/refs/tags/v$pkgver.tar.gz")
 sha256sums=('93ea48761f516964c2ccfdc0a6cd00a5d36165b8a82588e63235a27ae355dc8c')
 
 build() {

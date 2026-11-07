@@ -1,5 +1,5 @@
 # Maintainer: Ryan Hughes <ryan@omarchy.org>
-pkgname=omarchy-nvim
+pkgname=collie-nvim
 pkgver=2026.9.21
 pkgrel=5
 pkgdesc="Pre-built LazyVim configuration with cached plugins"
@@ -120,20 +120,20 @@ package() {
   find "$pkgdir/usr/share/$pkgname" -type f -exec chmod 644 {} \;
 
   # Restore plugin worktree modes after the package-wide chmod so users seeded
-  # from /etc/skel do not need a first-login omarchy-nvim-setup cleanup pass.
+  # from /etc/skel do not need a first-login collie-nvim-setup cleanup pass.
   restore_lazy_worktrees "$pkgdir/usr/share/$pkgname/data"
 
-  # Seed new users via /etc/skel. The installer installs omarchy-nvim before
+  # Seed new users via /etc/skel. The installer installs collie-nvim before
   # creating the first user, so this handles initial ISO installs and future
   # users without an extra overwrite step.
   install -dm755 "$pkgdir/etc/skel/.config" "$pkgdir/etc/skel/.local/share"
   cp -a "$pkgdir/usr/share/$pkgname/config" "$pkgdir/etc/skel/.config/nvim"
   cp -a "$pkgdir/usr/share/$pkgname/data" "$pkgdir/etc/skel/.local/share/nvim"
-  ln -snf "../../../../.local/state/omarchy/current/theme/neovim.lua" \
+  ln -snf "../../../../.local/state/collie/current/theme/neovim.lua" \
     "$pkgdir/etc/skel/.config/nvim/lua/plugins/theme.lua"
 
   # Ship the plugin cache once, now that /etc/skel has its copy. Keeping a
-  # second one under /usr/share made omarchy-nvim the largest package in an
+  # second one under /usr/share made collie-nvim the largest package in an
   # Omarchy install after noto-fonts-cjk — ~116 MiB installed, ~88 MB of it read
   # off the ISO on every install. config/ stays: migrations read it from there.
   rm -rf "$pkgdir/usr/share/$pkgname/data"
@@ -141,6 +141,6 @@ package() {
   # Install setup/refresh commands to /usr/bin. setup fills missing pieces;
   # refresh explicitly backs up and overwrites with the same /etc/skel defaults
   # used for newly-created users.
-  install -Dm755 "$startdir/omarchy-nvim-setup" "$pkgdir/usr/bin/omarchy-nvim-setup"
-  ln -s omarchy-nvim-setup "$pkgdir/usr/bin/omarchy-nvim-refresh"
+  install -Dm755 "$startdir/collie-nvim-setup" "$pkgdir/usr/bin/collie-nvim-setup"
+  ln -s collie-nvim-setup "$pkgdir/usr/bin/collie-nvim-refresh"
 }

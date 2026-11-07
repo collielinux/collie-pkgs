@@ -163,7 +163,7 @@ build() {
       -D SUNSHINE_ASSETS_DIR="share/sunshine"
       -D SUNSHINE_PUBLISHER_NAME='Omarchy'
       -D SUNSHINE_PUBLISHER_WEBSITE='https://omarchy.org'
-      -D SUNSHINE_PUBLISHER_ISSUE_URL='https://github.com/omacom/omarchy-pkgs/issues'
+      -D SUNSHINE_PUBLISHER_ISSUE_URL='https://github.com/collielinux/collie-pkgs/issues'
     )
 
     if [[ $CARCH == aarch64 ]]; then

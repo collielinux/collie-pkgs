@@ -1,6 +1,6 @@
 # Obsidian on ARM
 
-This is the canonical `obsidian` package, extracted from omacom/omarchy-pkgs #240 at `dcef132b2df11bb762e233ea8c6af3110f079b67`. It repackages the official ARM64 desktop tarball and preserves the original contributor attribution and Electron/Chromium license files.
+This is the canonical `obsidian` package, extracted from collielinux/collie-pkgs #240 at `dcef132b2df11bb762e233ea8c6af3110f079b67`. It repackages the official ARM64 desktop tarball and preserves the original contributor attribution and Electron/Chromium license files.
 
 The package owns the installed application bundle and Electron runtime. `chrome-sandbox` is installed without setuid: Chromium's sandbox uses unprivileged user namespaces, which Arch-family kernels allow. A system that disables them must re-enable them rather than launch Obsidian with `--no-sandbox`. Obsidian's user-controlled in-app updater may separately update application code; no updater-disabling patch is applied. See https://obsidian.md/help/updates.
 

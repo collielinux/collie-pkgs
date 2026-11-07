@@ -244,7 +244,7 @@ Use this when a publish run failed or was cancelled, or a package is missing
 from a channel:
 
 ```bash
-gh workflow run publish.yml -R omacom/omarchy-pkgs -f packages="<package> ..."
+gh workflow run publish.yml -R collielinux/collie-pkgs -f packages="<package> ..."
 ```
 
 It publishes `master`'s version of each named package, reusing a build
@@ -264,7 +264,7 @@ For a run that failed, see [When a publish fails](#when-a-publish-fails).
 ### Build a package without publishing
 
 ```bash
-gh workflow run build-pr.yml -R omacom/omarchy-pkgs -f packages="<package> ..."
+gh workflow run build-pr.yml -R collielinux/collie-pkgs -f packages="<package> ..."
 
 bin/build --package <package>                  # Locally; needs Docker or Podman
 bin/build --package <package> --arch aarch64   # Emulated on an x86_64 machine
@@ -290,7 +290,7 @@ a local checkout.
 2. Remove it from the channel databases:
 
    ```bash
-   gh workflow run unpublish.yml -R omacom/omarchy-pkgs \
+   gh workflow run unpublish.yml -R collielinux/collie-pkgs \
      -f packages="<pkgbase> ..." -f channels="edge rc stable"
    ```
 
@@ -305,9 +305,9 @@ Edge collects every merge; rc and stable move only when someone promotes
 them. Run **Promote channel** from the Actions tab, or:
 
 ```bash
-gh workflow run promote.yml -R omacom/omarchy-pkgs -f direction="edge -> rc"
-gh workflow run promote.yml -R omacom/omarchy-pkgs -f direction="edge -> rc" -f dry_run=true   # plan only
-gh workflow run promote.yml -R omacom/omarchy-pkgs -f direction="rc -> stable" -f packages="<pkgbase> ..."
+gh workflow run promote.yml -R collielinux/collie-pkgs -f direction="edge -> rc"
+gh workflow run promote.yml -R collielinux/collie-pkgs -f direction="edge -> rc" -f dry_run=true   # plan only
+gh workflow run promote.yml -R collielinux/collie-pkgs -f direction="rc -> stable" -f packages="<pkgbase> ..."
 ```
 
 For each architecture, `bin/promote-channel` moves every pkgbase the source
@@ -446,9 +446,9 @@ written, for every package in that merge.
 Find the run and read the failure:
 
 ```bash
-gh run list -R omacom/omarchy-pkgs --workflow publish.yml --limit 10
-gh run view <run-id> -R omacom/omarchy-pkgs                # Which job failed
-gh run view <run-id> -R omacom/omarchy-pkgs --log-failed   # Its log
+gh run list -R collielinux/collie-pkgs --workflow publish.yml --limit 10
+gh run view <run-id> -R collielinux/collie-pkgs                # Which job failed
+gh run view <run-id> -R collielinux/collie-pkgs --log-failed   # Its log
 ```
 
 Then act on which job failed:
@@ -498,7 +498,7 @@ Builds cost machines, so `build-pr.yml` runs them only for trusted authors:
 - repository collaborators and bots
 - authors listed in `.github/VOUCHED.td`
 - any PR a maintainer labels `build-approved` (that PR only, including later
-  commits): `gh pr edit <number> -R omacom/omarchy-pkgs --add-label build-approved`
+  commits): `gh pr edit <number> -R collielinux/collie-pkgs --add-label build-approved`
 
 `VOUCHED.td` takes one `github:<username>` per line; `-github:<username>
 <reason>` denounces an author.

@@ -5,7 +5,7 @@
 # layout, and reading it confirmed the shape below. That is the whole of the relationship.
 #
 # ONE PKGBUILD serves two channels: the AUR, and Omarchy's own package repository
-# (omacom/omarchy-pkgs, which copies this file to pkgbuilds/collie-bin/PKGBUILD). The install root
+# (collielinux/collie-pkgs, which copies this file to pkgbuilds/collie-bin/PKGBUILD). The install root
 # is /opt/collie because that is the layout that repository expects of an application that ships a
 # whole tree — a thin /usr/bin symlink into /opt/<name> — and it is a layout the AUR is equally
 # happy with. See packaging/omarchy/README.md.

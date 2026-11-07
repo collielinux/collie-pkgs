@@ -1,11 +1,11 @@
 # Maintainer: David Heinemeier Hansson <david@hey.com>
 
-pkgname=omawrite
+pkgname=colliewrite
 pkgver=0.7.2
 pkgrel=1
 pkgdesc='Dead-simple Markdown writing app built with Qt Quick'
 arch=('x86_64' 'aarch64')
-url='https://github.com/omacom/omawrite'
+url='https://github.com/collielinux/colliewrite'
 license=('MIT' 'OFL-1.1')
 install='omawrite.install'
 options=('!debug')
@@ -21,7 +21,7 @@ makedepends=(
   'qt6-base'
   'qt6-declarative'
 )
-source=("$pkgname-$pkgver.tar.gz::https://github.com/omacom/omawrite/archive/refs/tags/v$pkgver.tar.gz")
+source=("$pkgname-$pkgver.tar.gz::https://github.com/collielinux/colliewrite/archive/refs/tags/v$pkgver.tar.gz")
 sha256sums=('a6c23b44ae5c5b11b357b0f7510141efbe3c590691e038ac6ee7b49afd006f56')
 
 build() {

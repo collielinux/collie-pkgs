@@ -1,11 +1,11 @@
 # Maintainer: Tobi Lütke <tobi@lutke.com>
 
-pkgname=omasnap
+pkgname=colliesnap
 pkgver=1.25.0
 pkgrel=1
 pkgdesc="Native Wayland screenshot and annotation overlay for Hyprland"
 arch=('x86_64' 'aarch64')
-url="https://github.com/omacom/omasnap"
+url="https://github.com/collielinux/colliesnap"
 license=('MIT' 'OFL-1.1')
 depends=(
   'hyprland'

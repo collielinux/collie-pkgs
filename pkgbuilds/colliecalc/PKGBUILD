@@ -1,6 +1,6 @@
 # Maintainer: David Heinemeier Hansson <david@hey.com>
 
-pkgname=omacalc
+pkgname=colliecalc
 pkgver=0.3.1
 pkgrel=1
 pkgdesc='Dead-simple calculator built with Qt Quick'

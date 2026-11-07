@@ -78,7 +78,7 @@ files=(
   logo.txt
 )
 # Left out of an older source's aarch64 package, and nothing else is. Its boot
-# drop-ins ship on both (omacom/omarchy-pkgs#380).
+# drop-ins ship on both (collielinux/collie-pkgs#380).
 legacy_aarch64_absent=(
   etc/mkinitcpio.conf.d/thunderbolt_module.conf
   etc/modprobe.d/omarchy-usb-autosuspend.conf

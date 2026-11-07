@@ -9,7 +9,7 @@ pkgdesc="Ambient light sensor service for the Microsoft Surface Pro 11 (Snapdrag
 arch=('aarch64')
 # Qualcomm-only: the pacman platform guard keeps it off other hardware.
 groups=('omarchy-platform-qualcomm')
-url="https://github.com/omacom/omarchy-pkgs"
+url="https://github.com/collielinux/collie-pkgs"
 license=('GPL-3.0-or-later' 'MIT')
 depends=('glib2' 'iio-sensor-proxy' 'libqmi' 'libqrtr-glib' 'protobuf-c' 'util-linux')
 # libssc builds GObject introspection whenever glib's .pc files are present.

@@ -4,7 +4,7 @@
 # and starts polling.
 #
 # Substitute before use:
-#   __REPO_URL__   https://github.com/omacom/omarchy-pkgs.git
+#   __REPO_URL__   https://github.com/collielinux/collie-pkgs.git
 #   __BRANCH__     branch carrying ci/ (master once merged)
 #   __ENV_B64__    base64 of a filled-in controller.env.example
 #   __SSH_KEYS_JSON__ JSON array of public keys authorized for root

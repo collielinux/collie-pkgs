@@ -26,7 +26,7 @@ function fixture(t, count = 1) {
     rest: { pulls: { list: async args => {
       lookup.push(args);
       return { data: groups.map((group, i) => ({
-        number: i + 1, head: { ref: group.branch, repo: { full_name: 'omacom/omarchy-pkgs' } },
+        number: i + 1, head: { ref: group.branch, repo: { full_name: 'collielinux/collie-pkgs' } },
       })) };
     } } },
     graphql: async (_, { owner, repo, number }) => {

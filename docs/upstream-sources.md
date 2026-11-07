@@ -67,7 +67,7 @@ see the same commit. Values available to `version`:
   commit's own history count, so a release cut on another branch is ignored.
 
 `{version}.r{distance}.g{commit:.7}` gives `1.21.0.r15.gabc1234`, which pacman
-orders above the `1.21.0` release it follows and below `1.21.1`; `omasnap-git`
+orders above the `1.21.0` release it follows and below `1.21.1`; `colliesnap-git`
 uses it. The Omarchy dev pair uses `{version}.r{count}.g{commit:.7}` instead
 because its published history counted every commit and the number must never
 go down.
@@ -103,12 +103,12 @@ The builder controller box dispatches both groups on systemd timers
 It uses a personal access token so its PRs trigger builds and its merges trigger
 publishing without manual approval. No GitHub App is required.
 
-1. Use a fine-grained PAT with access to **omacom/omarchy-pkgs** and repository
+1. Use a fine-grained PAT with access to **collielinux/collie-pkgs** and repository
    **Contents: Read and write** and **Pull requests: Read and write** permissions.
    Its owner must be trusted by the build workflow (for example, a collaborator).
    The existing controller PAT can be reused when it has these permissions.
 2. In the repository's
-   [Actions secrets](https://github.com/omacom/omarchy-pkgs/settings/secrets/actions),
+   [Actions secrets](https://github.com/collielinux/collie-pkgs/settings/secrets/actions),
    save the PAT as `PKGS_BOT_TOKEN`. Update this secret when the token is rotated
    or expires. The built-in Actions `GITHUB_TOKEN` cannot run this unattended chain.
 3. Keep **Allow auto-merge** enabled and require `result`, `self-tests`, and
@@ -179,7 +179,7 @@ in `origin` and has no effect on release selection.
 | `localsend` | github | [localsend/localsend](https://github.com/localsend/localsend) |
 | `macbook12-spi-driver-dkms` | git_branch | [https://github.com/marc-git/macbook12-spi-driver.git](https://github.com/marc-git/macbook12-spi-driver.git) |
 | `omarchy-dev`, `omarchy-settings-dev` | git_branch (auto-merge) | [https://github.com/omacom/omarchy.git](https://github.com/omacom/omarchy.git) `quattro` |
-| `omasnap-git` | git_branch (auto-merge) | [https://github.com/omacom/omasnap.git](https://github.com/omacom/omasnap.git) `main` |
+| `colliesnap-git` | git_branch (auto-merge) | [https://github.com/collielinux/colliesnap.git](https://github.com/collielinux/colliesnap.git) `main` |
 | `minecraft-launcher` | archive | [https://launcher.mojang.com/download/Minecraft.deb](https://launcher.mojang.com/download/Minecraft.deb) |
 | `nautilus-dropbox` | github | [dropbox/nautilus-dropbox](https://github.com/dropbox/nautilus-dropbox) |
 | `nordvpn-bin` | debian | [https://repo.nordvpn.com/deb/nordvpn/debian/dists/stable/main/binary-amd64/Packages](https://repo.nordvpn.com/deb/nordvpn/debian/dists/stable/main/binary-amd64/Packages) |

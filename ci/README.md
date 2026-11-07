@@ -51,7 +51,7 @@ systemctl list-timers omarchy-controller.timer      # Is it ticking
 Check the pool from anywhere:
 
 ```bash
-gh api repos/omacom/omarchy-pkgs/actions/runners --jq \
+gh api repos/collielinux/collie-pkgs/actions/runners --jq \
   '"online \([.runners[]|select(.status=="online")]|length), busy \([.runners[]|select(.busy)]|length)"'
 ```
 
@@ -59,7 +59,7 @@ Jobs queued with no runner online for several minutes means the controller is
 not creating droplets: read its journal. See what is waiting:
 
 ```bash
-gh run list -R omacom/omarchy-pkgs --workflow build-pr.yml --status queued
+gh run list -R collielinux/collie-pkgs --workflow build-pr.yml --status queued
 ```
 
 Only x86_64 jobs use this pool. A queued aarch64 job is waiting on GitHub's
@@ -135,7 +135,7 @@ The controller reaps on its own. To do it manually, delete droplets tagged
 
 ```bash
 DIGITALOCEAN_TOKEN=<account that pays for builders> GITHUB_TOKEN=<fine-grained PAT> \
-  REPO=omacom/omarchy-pkgs ci/controller-box/create.sh
+  REPO=collielinux/collie-pkgs ci/controller-box/create.sh
 ```
 
 - The GitHub PAT is fine-grained and scoped to this repository: Actions read

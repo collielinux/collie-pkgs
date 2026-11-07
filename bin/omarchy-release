@@ -30,7 +30,7 @@ source "$BUILD_ROOT/helpers/paths.sh"
 
 UPSTREAM_URL="${OMARCHY_UPSTREAM_URL:-https://github.com/omacom/omarchy.git}"
 UPSTREAM_REPO="${OMARCHY_UPSTREAM_REPO:-omacom/omarchy}"
-PKGS_REPO="${OMARCHY_PKGS_REPO:-omacom/omarchy-pkgs}"
+PKGS_REPO="${OMARCHY_PKGS_REPO:-collielinux/collie-pkgs}"
 SITE_REPO="${OMARCHY_SITE_REPO:-omacom/omarchy-site}"
 ISO_REPO="${OMARCHY_ISO_REPO:-omacom/omarchy-iso}"
 DEV_BRANCH="${OMARCHY_DEV_BRANCH:-quattro}"
