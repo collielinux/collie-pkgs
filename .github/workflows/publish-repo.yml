@@ -84,8 +84,10 @@ jobs:
               # builds the full set so each repo db lists what it ships.
               cd /repo/out
               chown -R builder:builder /repo/out
+              # Arch Linux ARM's makepkg.conf still emits .pkg.tar.xz, so
+              # match every archive extension rather than assuming zstd.
               su builder -c "cd /repo/out && HOME=/home/builder repo-add -k $SIGNING_KEYID \
-                /repo/out/collie.db.tar.gz ./*.pkg.tar.zst"
+                /repo/out/collie.db.tar.gz ./*.pkg.tar.*"
               # Nest under the arch dir: the tsuchi sync extracts each tarball
               # and rsyncs <workdir>/<arch>/ into /srv/pkgs/collie/<arch>/.
               mkdir -p "/repo/final/${{ matrix.arch }}"
