@@ -32,7 +32,10 @@ jobs:
             image: ghcr.io/archlinux/archlinux:latest
           - arch: aarch64
             runner: namespace-profile-collie-arm64
-            image: ghcr.io/menci/archlinuxarm:latest
+            # Pinned to the same digest the ISO builder uses: :latest's newer
+            # pacman sandboxes via Landlock, which the Namespace ARM kernel
+            # lacks. --disable-sandbox covers any residual drift.
+            image: ghcr.io/menci/archlinuxarm@sha256:3e1074c407fc1a57c2a2117af6920c96a7cc906fa6f1f2da8a4a7fd3aa2c2f4e
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
@@ -48,7 +51,7 @@ jobs:
             -e SIGNING_KEYID \
             -v "$PWD:/src" -w /src \
             "${{ matrix.image }}" bash -euo pipefail -c '
-              pacman -Syy --noconfirm --needed base-devel git pacman-contrib
+              pacman -Syy --disable-sandbox --noconfirm --needed base-devel git pacman-contrib
 
               useradd -m -s /bin/bash builder
               mkdir -p /repo/pkgbuilds /repo/out /home/builder/.gnupg
@@ -69,7 +72,7 @@ jobs:
                   | sed "s/[<>=].*//" | sort -u)
                 if [[ -n $makedeps ]]; then
                   # shellcheck disable=SC2086
-                  pacman -S --needed --noconfirm $makedeps
+                  pacman -S --disable-sandbox --needed --noconfirm $makedeps
                 fi
                 su builder -c "cd /repo/pkgbuilds/$pkg && \
                   HOME=/home/builder makepkg --noconfirm --skippgpcheck \
