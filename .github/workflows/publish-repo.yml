@@ -54,11 +54,16 @@ jobs:
               pacman -Syy --disable-sandbox --noconfirm --needed base-devel git pacman-contrib
 
               useradd -m -s /bin/bash builder
-              mkdir -p /repo/pkgbuilds /repo/out /home/builder/.gnupg
-              chmod 700 /home/builder/.gnupg
-              chown -R builder:builder /home/builder/.gnupg
-              printf "%s" "$COLLIE_GPG_PRIVATE_KEY" | su builder -c "HOME=/home/builder gpg --batch --import"
+              mkdir -p /repo/pkgbuilds /repo/out /repo/gnupg
+              chmod 700 /repo/gnupg
+              # Signing runs as root against a dedicated GNUPGHOME (the same
+              # pattern as bin/publish-artifact): repo-add and gpg need no
+              # unprivileged user, and this keeps su -- which flaked once with
+              # a spurious "user does not exist" -- to the makepkg steps that
+              # genuinely require one.
+              printf "%s" "$COLLIE_GPG_PRIVATE_KEY" | GNUPGHOME=/repo/gnupg gpg --batch --import
 
+              shopt -s nullglob
               packages="collie-keyring collie-nvim collie-screensaver shear tally snip"
               for pkg in $packages; do
                 echo "=== Building $pkg ==="
@@ -77,19 +82,36 @@ jobs:
                 su builder -c "cd /repo/pkgbuilds/$pkg && \
                   HOME=/home/builder makepkg --noconfirm --skippgpcheck \
                   --skipchecksums --nodeps -f"
-                mv /repo/pkgbuilds/$pkg/*.pkg.tar.* /repo/out/ 2>/dev/null || true
+                mv /repo/pkgbuilds/$pkg/*.pkg.tar.* /repo/out/
               done
 
-              # arch=('any') packages are identical on both arches; every job
-              # builds the full set so each repo db lists what it ships.
+              # Fail loudly rather than publish a partial repo.
+              built=(/repo/out/*.pkg.tar.zst /repo/out/*.pkg.tar.xz)
+              if (( ${#built[@]} != 6 )); then
+                echo "Expected 6 packages in /repo/out, found ${#built[@]}:" >&2
+                printf "  %s\n" "${built[@]}" >&2
+                exit 1
+              fi
+
               cd /repo/out
-              chown -R builder:builder /repo/out
-              # Arch Linux ARM's makepkg.conf still emits .pkg.tar.xz, so
-              # match every archive extension rather than assuming zstd.
-              su builder -c "cd /repo/out && HOME=/home/builder repo-add -k $SIGNING_KEYID \
-                /repo/out/collie.db.tar.gz ./*.pkg.tar.*"
-              # Nest under the arch dir: the tsuchi sync extracts each tarball
-              # and rsyncs <workdir>/<arch>/ into /srv/pkgs/collie/<arch>/.
+              # pacman.conf requires package signatures (SigLevel = Required
+              # DatabaseOptional), so each package gets a detached .sig that
+              # repo-add embeds into the database and we ship alongside it.
+              # Explicit extensions only: *.pkg.tar.* would also match the
+              # .sig files once they exist.
+              for f in ./*.pkg.tar.zst ./*.pkg.tar.xz; do
+                GNUPGHOME=/repo/gnupg gpg --batch --yes --pinentry-mode loopback \
+                  --local-user "$SIGNING_KEYID" --detach-sign --no-armor "$f"
+              done
+              # -s signs the database itself; -k selects the key. Arch Linux
+              # ARM emits .pkg.tar.xz where x86 emits .pkg.tar.zst.
+              GNUPGHOME=/repo/gnupg repo-add -s -k "$SIGNING_KEYID" \
+                /repo/out/collie.db.tar.gz ./*.pkg.tar.zst ./*.pkg.tar.xz
+              # repo-add leaves gzip duplicates named collie.db/collie.files;
+              # pacman only ever fetches the .tar.gz forms.
+              rm -f /repo/out/collie.db /repo/out/collie.files
+              # arch=any packages are identical on both arches; every job
+              # builds the full set so each repo db lists what it ships.
               mkdir -p "/repo/final/${{ matrix.arch }}"
               cp /repo/out/* "/repo/final/${{ matrix.arch }}/"
               tar -czf /src/repo-out/repo-${{ matrix.arch }}.tar.gz -C /repo/final ${{ matrix.arch }}
