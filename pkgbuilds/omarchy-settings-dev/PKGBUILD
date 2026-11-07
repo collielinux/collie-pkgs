@@ -2,7 +2,7 @@
 pkgname='omarchy-settings-dev'
 pkgver=4.0.0.r7608.g14abc07
 pkgrel=1
-# Pinned by the upstream watch in .omarchy/package.json (bin/sync-upstream):
+# Pinned by the upstream watch in .collie/package.json (bin/sync-upstream):
 # every quattro tip becomes a commit pin here, so the package is versioned,
 # checksummed and built exactly like a release, just more often. The r-number
 # is the branch's total commit count, not the distance from the last tag: the
@@ -19,20 +19,20 @@ pkgdesc='Omarchy user defaults, /etc/skel content, fonts, plymouth theme, and su
 # files as x86_64. makepkg only honours the arch-suffixed arrays below on
 # arch-specific packages.
 arch=('x86_64' 'aarch64')
-url='https://github.com/omacom/omarchy'
+url='https://github.com/collielinux/collie'
 license=('MIT')
 provides=('omarchy-settings' 'omarchy-security-functions')
 conflicts=('omarchy-settings')
 
 # `/etc/default/limine` is intentionally NOT owned by this package. The ISO
 # orchestrator generates it at install time from the resolved target boot
-# cmdline. We ship a template under /usr/share/omarchy/default/limine/ for the
+# cmdline. We ship a template under /usr/share/collie/default/limine/ for the
 # orchestrator to read.
 #
 # limine + limine-mkinitcpio-hook + limine-snapper-sync + snapper are NOT in
 # depends because this package gets installed into the live ISO env (for
 # plymouth / /etc/skel seeding) where there is no ESP and the mkinitcpio hook
-# would fail trying to deploy Limine. The target omarchy package pulls in the
+# would fail trying to deploy Limine. The target collie package pulls in the
 # full bootloader/snapshot stack; omarchy-iso only installs the early Limine
 # pieces needed before the runtime package lands.
 depends=(
@@ -53,15 +53,15 @@ makedepends=(
 # on upgrade. Only the paths the package actually installs into /etc qualify.
 # The etc-overrides set (faillock.conf, nsswitch.conf, cups-browsed.conf,
 # cups-files.conf, plymouthd.conf, /etc/skel/.bashrc) ships at
-# /usr/share/omarchy/etc-overrides/
+# /usr/share/collie/etc-overrides/
 # and is cp -f'd by post_install — those paths are unowned by pacman and the
 # scriptlet WILL clobber user edits on each upgrade (documented limitation).
 backup=(
   'etc/fastfetch/config.jsonc'
   'etc/docker/daemon.json'
   'etc/gnupg/dirmngr.conf'
-  'etc/sysctl.d/99-omarchy-sysctl.conf'
-  'etc/sysctl.d/90-omarchy-file-watchers.conf'
+  'etc/sysctl.d/99-collie-sysctl.conf'
+  'etc/sysctl.d/90-collie-file-watchers.conf'
   'etc/systemd/logind.conf.d/10-ignore-power-button.conf'
   'etc/systemd/logind.conf.d/20-inhibit-delay.conf'
   'etc/systemd/resolved.conf.d/10-disable-multicast.conf'
@@ -70,27 +70,27 @@ backup=(
   'etc/systemd/system/user@.service.d/10-faster-shutdown.conf'
   'etc/systemd/system/docker.service.d/no-block-boot.conf'
   'etc/systemd/system/plocate-updatedb.service.d/ac-only.conf'
-  'etc/systemd/system.conf.d/20-omarchy-nofile.conf'
-  'etc/systemd/user.conf.d/20-omarchy-nofile.conf'
+  'etc/systemd/system.conf.d/20-collie-nofile.conf'
+  'etc/systemd/user.conf.d/20-collie-nofile.conf'
   'etc/sddm.conf.d/10-theme.conf'
   'etc/sddm.conf.d/10-wayland.conf'
-  'etc/udev/rules.d/60-omarchy-io-scheduler.rules'
-  'etc/udev/rules.d/99-omarchy-power-profile.rules'
-  'etc/udev/rules.d/99-omarchy-wifi-powersave.rules'
+  'etc/udev/rules.d/60-collie-io-scheduler.rules'
+  'etc/udev/rules.d/99-collie-power-profile.rules'
+  'etc/udev/rules.d/99-collie-wifi-powersave.rules'
 )
 # Boot configuration is backed up on both architectures.
 backup+=(
-  'etc/mkinitcpio.conf.d/omarchy_hooks.conf'
-  'etc/limine-entry-tool.d/omarchy-defaults.conf'
-  'etc/limine-entry-tool.d/omarchy-uki.conf'
+  'etc/mkinitcpio.conf.d/collie_hooks.conf'
+  'etc/limine-entry-tool.d/collie-defaults.conf'
+  'etc/limine-entry-tool.d/collie-uki.conf'
 )
 # backup has no arch-suffixed form, so the x86_64-only drop-ins join it here.
 # Each of these paths is removed from an older source's aarch64 package in
 # package(), which adds them back for a runtime-profile source.
 _x86_64_backup=(
   'etc/mkinitcpio.conf.d/thunderbolt_module.conf'
-  'etc/modprobe.d/omarchy-usb-autosuspend.conf'
-  'etc/systemd/oomd.conf.d/10-omarchy.conf'
+  'etc/modprobe.d/collie-usb-autosuspend.conf'
+  'etc/systemd/oomd.conf.d/10-collie.conf'
   'etc/systemd/zram-generator.conf'
 )
 if [[ $CARCH == x86_64 ]]; then
@@ -99,21 +99,21 @@ fi
 
 optdepends=(
   'omarchy-dev: Full Omarchy desktop (quattro branch tip)'
-  'inxi: System information for omarchy-debug'
-  'fastfetch: System information for omarchy-upload-log'
+  'inxi: System information for collie-debug'
+  'fastfetch: System information for collie-upload-log'
 )
 optdepends_x86_64=(
   'limine: Bootloader the shipped /etc/mkinitcpio.conf.d/ and /etc/limine-entry-tool.d/ drop-ins are for'
-  'limine-mkinitcpio-hook: Picks up the shipped /etc/mkinitcpio.conf.d/omarchy_hooks.conf'
+  'limine-mkinitcpio-hook: Picks up the shipped /etc/mkinitcpio.conf.d/collie_hooks.conf'
   'limine-snapper-sync: Boot-entry sync for snapper snapshots'
   'zram-generator: Reads the shipped /etc/systemd/zram-generator.conf to create the compressed swap device'
-  'snapper: Used with the shipped /etc/snapper/config-templates/omarchy template'
+  'snapper: Used with the shipped /etc/snapper/config-templates/collie template'
 )
 
 install='omarchy-settings-dev.install'
 
 # Live config files the package can't own outright (the path is owned by an
-# upstream Arch package): ship them at /usr/share/omarchy/etc-overrides/ and
+# upstream Arch package): ship them at /usr/share/collie/etc-overrides/ and
 # cp -f into place from post_install. See omarchy-settings-dev.install.
 _etc_override_paths=(
   'etc/security/faillock.conf'
@@ -126,7 +126,7 @@ _etc_override_paths=(
 # Source: the pinned quattro commit. Set OMARCHY_SRC=/path/to/checkout to
 # build from a local source tree instead (mirrors omarchy-zsh/omarchy-fish DX);
 # the arrays are emptied below so nothing is downloaded in that case.
-source=("omarchy::git+https://github.com/omacom/omarchy.git#commit=${_commit}")
+source=("collie::git+https://github.com/collielinux/collie.git#commit=${_commit}")
 sha256sums=('c26058a026bdb0614505e966c1c54d7bd50ac462f72085002a222ddc29358dd3')
 if [[ -n "${OMARCHY_SRC:-}" ]]; then
   source=()
@@ -135,14 +135,14 @@ fi
 
 prepare() {
   if [[ -n "${OMARCHY_SRC:-}" ]]; then
-    rm -rf "$srcdir/omarchy"
-    mkdir -p "$srcdir/omarchy"
-    cp -a "${OMARCHY_SRC}/." "$srcdir/omarchy/"
+    rm -rf "$srcdir/collie"
+    mkdir -p "$srcdir/collie"
+    cp -a "${OMARCHY_SRC}/." "$srcdir/collie/"
   fi
 }
 
 # Print the HOOKS that result from sourcing mkinitcpio drop-ins onto a line.
-_omarchy_settings_hooks_after() {
+_collie_settings_hooks_after() {
   local start=$1
   shift
   (
@@ -159,7 +159,7 @@ _omarchy_settings_hooks_after() {
 }
 
 package() {
-  cd "$srcdir/omarchy"
+  cd "$srcdir/collie"
 
   # A source that decides at runtime which platform-specific files apply (see
   # default/settings-runtime-profile in it) ships its whole tree on aarch64,
@@ -184,23 +184,23 @@ package() {
   # Fastfetch reads /etc/fastfetch/config.jsonc when no user config exists.
   install -Dm644 etc/fastfetch/config.jsonc "$pkgdir/etc/fastfetch/config.jsonc"
 
-  # ALSO ship config/** under /usr/share/omarchy/config/. Used as the
-  # source-of-truth by omarchy-refresh-config, omarchy-reinstall-configs,
+  # ALSO ship config/** under /usr/share/collie/config/. Used as the
+  # source-of-truth by collie-refresh-config, collie-reinstall-configs,
   # and other commands that copy individual files into a running user's
   # ~/.config. /etc/skel only seeds new users; this tree is what existing
   # users re-sync against.
-  install -d "$pkgdir/usr/share/omarchy/config"
-  cp -a config/. "$pkgdir/usr/share/omarchy/config/"
+  install -d "$pkgdir/usr/share/collie/config"
+  cp -a config/. "$pkgdir/usr/share/collie/config/"
 
   # Package-owned defaults with real system/XDG locations. User config remains
   # higher priority: ~/.config/uwsm/default, ~/.config/uwsm/env.d,
   # ~/.config/environment.d, ~/.config/fontconfig, ~/.config/xdg-terminals.list,
   # ~/.config/mimeapps.list, and ~/.config/systemd/user can all override these.
-  install -Dm644 default/uwsm/env.d/10-omarchy "$pkgdir/usr/share/uwsm/env.d/10-omarchy"
-  install -Dm644 default/environment.d/10-omarchy-fcitx.conf "$pkgdir/usr/lib/environment.d/10-omarchy-fcitx.conf"
-  install -Dm644 default/fontconfig/conf.avail/50-omarchy.conf "$pkgdir/usr/share/fontconfig/conf.avail/50-omarchy.conf"
+  install -Dm644 default/uwsm/env.d/10-collie "$pkgdir/usr/share/uwsm/env.d/10-collie"
+  install -Dm644 default/environment.d/10-collie-fcitx.conf "$pkgdir/usr/lib/environment.d/10-collie-fcitx.conf"
+  install -Dm644 default/fontconfig/conf.avail/50-collie.conf "$pkgdir/usr/share/fontconfig/conf.avail/50-collie.conf"
   install -d "$pkgdir/etc/fonts/conf.d"
-  ln -sfn /usr/share/fontconfig/conf.avail/50-omarchy.conf "$pkgdir/etc/fonts/conf.d/50-omarchy.conf"
+  ln -sfn /usr/share/fontconfig/conf.avail/50-collie.conf "$pkgdir/etc/fonts/conf.d/50-collie.conf"
   # ALSA UCM profiles for sound cards alsa-ucm-conf has none for yet: NVIDIA's
   # MT8901 SoundWire profiles for the N1x, from alsa-ucm-conf#862, until a
   # release ships them. Drop the copy once alsa-ucm-conf does.
@@ -211,82 +211,82 @@ package() {
   install -Dm644 default/xdg-terminal-exec/hyprland-xdg-terminals.list "$pkgdir/usr/share/xdg-terminal-exec/hyprland-xdg-terminals.list"
   install -Dm644 default/applications/mimeapps.list "$pkgdir/usr/share/applications/mimeapps.list"
   install -Dm644 default/systemd/user/bt-agent.service "$pkgdir/usr/lib/systemd/user/bt-agent.service"
-  install -Dm644 default/systemd/user/omarchy-sleep-lock.service "$pkgdir/usr/lib/systemd/user/omarchy-sleep-lock.service"
-  install -Dm644 default/systemd/user/omarchy-recover-internal-monitor.service "$pkgdir/usr/lib/systemd/user/omarchy-recover-internal-monitor.service"
-  install -Dm644 default/systemd/user/omarchy-migrate-notify.service "$pkgdir/usr/lib/systemd/user/omarchy-migrate-notify.service"
+  install -Dm644 default/systemd/user/collie-sleep-lock.service "$pkgdir/usr/lib/systemd/user/collie-sleep-lock.service"
+  install -Dm644 default/systemd/user/collie-recover-internal-monitor.service "$pkgdir/usr/lib/systemd/user/collie-recover-internal-monitor.service"
+  install -Dm644 default/systemd/user/collie-migrate-notify.service "$pkgdir/usr/lib/systemd/user/collie-migrate-notify.service"
   # Compatibility alias for the old unit name. Existing users have an absolute
   # graphical-session.target.wants symlink to this path from when they were set
   # up, and the migration that repoints it only runs for users who actually run
   # an update -- which is the opposite of who this notifier is for. Without the
   # alias their symlink dangles and they are never told about pending
   # migrations. Droppable once installs have run migration 1785095882.
-  ln -sfn omarchy-migrate-notify.service "$pkgdir/usr/lib/systemd/user/omarchy-update-user-notify.service"
-  install -Dm644 default/systemd/user/omarchy-tailscale-receive.service "$pkgdir/usr/lib/systemd/user/omarchy-tailscale-receive.service"
-  install -Dm644 default/systemd/user/omarchy-fcitx5.service "$pkgdir/usr/lib/systemd/user/omarchy-fcitx5.service"
-  install -Dm644 default/systemd/user/omarchy-crash-watch.service "$pkgdir/usr/lib/systemd/user/omarchy-crash-watch.service"
+  ln -sfn collie-migrate-notify.service "$pkgdir/usr/lib/systemd/user/collie-update-user-notify.service"
+  install -Dm644 default/systemd/user/collie-tailscale-receive.service "$pkgdir/usr/lib/systemd/user/collie-tailscale-receive.service"
+  install -Dm644 default/systemd/user/collie-fcitx5.service "$pkgdir/usr/lib/systemd/user/collie-fcitx5.service"
+  install -Dm644 default/systemd/user/collie-crash-watch.service "$pkgdir/usr/lib/systemd/user/collie-crash-watch.service"
   # Holds WirePlumber at login until the session can open the cameras, so
-  # libcamera finds them (omarchy-hw-wait-camera-access).
-  if [[ -f default/systemd/user/wireplumber.service.d/10-omarchy-camera-access.conf ]]; then
-    install -Dm644 default/systemd/user/wireplumber.service.d/10-omarchy-camera-access.conf "$pkgdir/usr/lib/systemd/user/wireplumber.service.d/10-omarchy-camera-access.conf"
+  # libcamera finds them (collie-hw-wait-camera-access).
+  if [[ -f default/systemd/user/wireplumber.service.d/10-collie-camera-access.conf ]]; then
+    install -Dm644 default/systemd/user/wireplumber.service.d/10-collie-camera-access.conf "$pkgdir/usr/lib/systemd/user/wireplumber.service.d/10-collie-camera-access.conf"
   fi
   # First-run enables this unit, so it ships wherever the source has it.
-  if [[ -f default/systemd/user/omarchy-brightness-keyboard-auto.service ]]; then
-    install -Dm644 default/systemd/user/omarchy-brightness-keyboard-auto.service "$pkgdir/usr/lib/systemd/user/omarchy-brightness-keyboard-auto.service"
+  if [[ -f default/systemd/user/collie-brightness-keyboard-auto.service ]]; then
+    install -Dm644 default/systemd/user/collie-brightness-keyboard-auto.service "$pkgdir/usr/lib/systemd/user/collie-brightness-keyboard-auto.service"
   fi
   # First-run, a migration and their own setup commands enable the USB and
-  # Thunderbolt approval watchers. Left in /usr/share/omarchy/default alone,
+  # Thunderbolt approval watchers. Left in /usr/share/collie/default alone,
   # systemd cannot find them: the Thunderbolt migration fails, which holds back
   # every migration after it, and first-run enables none of its units.
-  if [[ -f default/systemd/user/omarchy-usb-authorization.service ]]; then
-    install -Dm644 default/systemd/user/omarchy-usb-authorization.service "$pkgdir/usr/lib/systemd/user/omarchy-usb-authorization.service"
+  if [[ -f default/systemd/user/collie-usb-authorization.service ]]; then
+    install -Dm644 default/systemd/user/collie-usb-authorization.service "$pkgdir/usr/lib/systemd/user/collie-usb-authorization.service"
   fi
-  if [[ -f default/systemd/user/omarchy-thunderbolt-authorization.service ]]; then
-    install -Dm644 default/systemd/user/omarchy-thunderbolt-authorization.service "$pkgdir/usr/lib/systemd/user/omarchy-thunderbolt-authorization.service"
+  if [[ -f default/systemd/user/collie-thunderbolt-authorization.service ]]; then
+    install -Dm644 default/systemd/user/collie-thunderbolt-authorization.service "$pkgdir/usr/lib/systemd/user/collie-thunderbolt-authorization.service"
   fi
   # Marks app.slice (and only app.slice) as a systemd-oomd kill candidate, so
   # memory pressure costs one app scope instead of the compositor session.
-  # Thresholds live in etc/systemd/oomd.conf.d/10-omarchy.conf. Both this and
+  # Thresholds live in etc/systemd/oomd.conf.d/10-collie.conf. Both this and
   # the zram vendor drop-in belong to the x86_64 memory stack: an older
   # source's aarch64 install neither enables systemd-oomd nor configures zram.
   if (( ! legacy_aarch64 )); then
     install -Dm644 default/systemd/user/app.slice.d/10-oomd.conf "$pkgdir/usr/lib/systemd/user/app.slice.d/10-oomd.conf"
-    install -Dm644 default/systemd/zram-generator.conf.d/90-omarchy.conf "$pkgdir/usr/lib/systemd/zram-generator.conf.d/90-omarchy.conf"
+    install -Dm644 default/systemd/zram-generator.conf.d/90-collie.conf "$pkgdir/usr/lib/systemd/zram-generator.conf.d/90-collie.conf"
   fi
-  install -Dm644 default/systemd/system/plocate-updatedb.service.d/10-omarchy.conf "$pkgdir/usr/lib/systemd/system/plocate-updatedb.service.d/10-omarchy.conf"
+  install -Dm644 default/systemd/system/plocate-updatedb.service.d/10-collie.conf "$pkgdir/usr/lib/systemd/system/plocate-updatedb.service.d/10-collie.conf"
   # Omarchy's time servers (ntp.omarchy.org) in place of systemd's built-in
   # Arch pool, on both architectures. Conditional until the pinned source
   # carries the drop-in.
-  if [[ -f default/systemd/timesyncd.conf.d/10-omarchy.conf ]]; then
-    install -Dm644 default/systemd/timesyncd.conf.d/10-omarchy.conf "$pkgdir/usr/lib/systemd/timesyncd.conf.d/10-omarchy.conf"
+  if [[ -f default/systemd/timesyncd.conf.d/10-collie.conf ]]; then
+    install -Dm644 default/systemd/timesyncd.conf.d/10-collie.conf "$pkgdir/usr/lib/systemd/timesyncd.conf.d/10-collie.conf"
   fi
   # systemd 262's NvPCR setup fails without a signed PCR policy in the UKI.
   local unit
   for unit in systemd-tpm2-setup-early.service systemd-pcrproduct.service systemd-pcrlogin@.service; do
-    if [[ -f default/systemd/system/$unit.d/10-omarchy-nvpcr.conf ]]; then
-      install -Dm644 "default/systemd/system/$unit.d/10-omarchy-nvpcr.conf" "$pkgdir/usr/lib/systemd/system/$unit.d/10-omarchy-nvpcr.conf"
+    if [[ -f default/systemd/system/$unit.d/10-collie-nvpcr.conf ]]; then
+      install -Dm644 "default/systemd/system/$unit.d/10-collie-nvpcr.conf" "$pkgdir/usr/lib/systemd/system/$unit.d/10-collie-nvpcr.conf"
     fi
   done
 
-  # Same for applications/** — used by omarchy-refresh-applications,
-  # omarchy-install-gaming-*, etc. to copy .desktop files into ~/.local/share.
-  install -d "$pkgdir/usr/share/omarchy/applications"
-  cp -a applications/. "$pkgdir/usr/share/omarchy/applications/"
+  # Same for applications/** — used by collie-refresh-applications,
+  # collie-install-gaming-*, etc. to copy .desktop files into ~/.local/share.
+  install -d "$pkgdir/usr/share/collie/applications"
+  cp -a applications/. "$pkgdir/usr/share/collie/applications/"
   # Icons are package-owned below in /usr/share/icons/hicolor, not this
   # historical app-local folder.
-  rm -rf "$pkgdir/usr/share/omarchy/applications/icons"
+  rm -rf "$pkgdir/usr/share/collie/applications/icons"
 
   # /etc tree (drop-ins the package fully owns + the etc-override files we
   # stage separately below).
   install -d "$pkgdir/etc"
   cp -a etc/. "$pkgdir/etc/"
-  # omacom/omarchy#13362 moves the HOOKS baseline into its own drop-in.
-  [[ ! -f $pkgdir/etc/mkinitcpio.conf.d/00-omarchy-hooks.conf ]] ||
-    backup+=('etc/mkinitcpio.conf.d/00-omarchy-hooks.conf')
+  # omacom/collie#13362 moves the HOOKS baseline into its own drop-in.
+  [[ ! -f $pkgdir/etc/mkinitcpio.conf.d/00-collie-hooks.conf ]] ||
+    backup+=('etc/mkinitcpio.conf.d/00-collie-hooks.conf')
   # Sources that answer ARP per interface ship this; keep local edits to it.
-  [[ ! -f $pkgdir/etc/sysctl.d/90-omarchy-arp.conf ]] ||
-    backup+=('etc/sysctl.d/90-omarchy-arp.conf')
+  [[ ! -f $pkgdir/etc/sysctl.d/90-collie-arp.conf ]] ||
+    backup+=('etc/sysctl.d/90-collie-arp.conf')
   if [[ $CARCH == aarch64 ]]; then
-    # Keep omarchy_hooks.conf and the Limine entry-tool config: without them a
+    # Keep collie_hooks.conf and the Limine entry-tool config: without them a
     # kernel update on an encrypted aarch64 install rebuilds an initramfs with
     # no encrypt hook and the machine cannot unlock its root. An older source's
     # Thunderbolt module request is x86-specific; ARM kernels lack the module
@@ -298,12 +298,12 @@ package() {
     # mkinitcpio.conf (legacy GRUB Macs) set, and an unconditional HOOKS= here
     # would replace it. An older source that sets HOOKS outright (v4.0.4) gets
     # its line wrapped so it applies only when the hooks loaded so far lack
-    # asahi; one that already decides per platform (omacom/omarchy#13362), and
+    # asahi; one that already decides per platform (omacom/collie#13362), and
     # every runtime-profile source, ships as it is. The wrapper reads
     # configuration, not the running machine, so it also holds when the image
     # is built in a chroot.
     local hooks_conf hooks_confs=()
-    for hooks_conf in "$pkgdir"/etc/mkinitcpio.conf.d/{00-omarchy-hooks,omarchy_hooks}.conf; do
+    for hooks_conf in "$pkgdir"/etc/mkinitcpio.conf.d/{00-collie-hooks,collie_hooks}.conf; do
       [[ -f $hooks_conf ]] || continue
       hooks_confs+=("$hooks_conf")
       (( legacy_aarch64 )) || continue
@@ -317,8 +317,8 @@ package() {
     # files, and a stock line must not: that is where Omarchy's hooks come from.
     local mac_line='base udev block asahi encrypt filesystems fsck' stock_line='base udev block filesystems fsck'
     local mac_hooks stock_hooks
-    if ! mac_hooks=$(_omarchy_settings_hooks_after "$mac_line" "${hooks_confs[@]}") ||
-      ! stock_hooks=$(_omarchy_settings_hooks_after "$stock_line" "${hooks_confs[@]}") ||
+    if ! mac_hooks=$(_collie_settings_hooks_after "$mac_line" "${hooks_confs[@]}") ||
+      ! stock_hooks=$(_collie_settings_hooks_after "$stock_line" "${hooks_confs[@]}") ||
       [[ $mac_hooks != "$mac_line" || $stock_hooks == "$stock_line" ]]; then
       echo "etc/mkinitcpio.conf.d: the aarch64 hooks must keep a Mac's asahi line and set everyone else's" >&2
       return 1
@@ -330,13 +330,13 @@ package() {
     # tuning written for zram would be wrong for it. Keep only the network
     # tuning.
     rm -rf "$pkgdir/etc/systemd/oomd.conf.d"
-    rm -f "$pkgdir/etc/systemd/zram-generator.conf" "$pkgdir/etc/tmpfiles.d/omarchy-zswap.conf"
-    cat >"$pkgdir/etc/sysctl.d/99-omarchy-sysctl.conf" <<'EOF'
+    rm -f "$pkgdir/etc/systemd/zram-generator.conf" "$pkgdir/etc/tmpfiles.d/collie-zswap.conf"
+    cat >"$pkgdir/etc/sysctl.d/99-collie-sysctl.conf" <<'EOF'
 # Solve common flakiness with SSH (MTU discovery on flaky links).
 net.ipv4.tcp_mtu_probing=1
 EOF
     # USB autosuspend is left at the kernel default on Apple Silicon.
-    rm -f "$pkgdir/etc/modprobe.d/omarchy-usb-autosuspend.conf"
+    rm -f "$pkgdir/etc/modprobe.d/collie-usb-autosuspend.conf"
     rmdir "$pkgdir/etc/modprobe.d" "$pkgdir/etc/tmpfiles.d" 2>/dev/null || true
   fi
   # sudoers.d files must be mode 0440 or sudo will refuse them, and the
@@ -347,38 +347,38 @@ EOF
     chmod 0440 "$pkgdir/etc/sudoers.d"/*
   fi
 
-  # Stage upstream-owned files at /usr/share/omarchy/etc-overrides/ instead of
+  # Stage upstream-owned files at /usr/share/collie/etc-overrides/ instead of
   # owning their live /etc paths directly (which would conflict with pam,
   # filesystem, cups-browsed, plymouth, bash). post_install copies them in.
-  install -d "$pkgdir/usr/share/omarchy/etc-overrides"
+  install -d "$pkgdir/usr/share/collie/etc-overrides"
   install -Dm644 default/bashrc \
-    "$pkgdir/usr/share/omarchy/etc-overrides/dot.bashrc"
-  cat >"$pkgdir/usr/share/omarchy/etc-overrides/os-release" <<EOF
-NAME="Omarchy"
-PRETTY_NAME="Omarchy"
-ID=omarchy
+    "$pkgdir/usr/share/collie/etc-overrides/dot.bashrc"
+  cat >"$pkgdir/usr/share/collie/etc-overrides/os-release" <<EOF
+NAME="Collie"
+PRETTY_NAME="Collie"
+ID=collie
 ID_LIKE=arch
 BUILD_ID="$pkgver"
 VERSION_ID="$pkgver"
 ANSI_COLOR="38;2;158;206;106"
-HOME_URL="https://omarchy.org/"
+HOME_URL="https://github.com/collielinux/collie"
 DOCUMENTATION_URL="https://learn.omacom.io/2/the-omarchy-manual"
 SUPPORT_URL="https://discord.gg/tXFUdasqhY"
-BUG_REPORT_URL="https://github.com/omacom/omarchy/issues"
-LOGO=omarchy
+BUG_REPORT_URL="https://github.com/collielinux/collie/issues"
+LOGO=collie
 EOF
   for path in "${_etc_override_paths[@]}"; do
     case "$path" in
       'etc/security/faillock.conf')
-        mv "$pkgdir/$path" "$pkgdir/usr/share/omarchy/etc-overrides/security-faillock.conf" ;;
+        mv "$pkgdir/$path" "$pkgdir/usr/share/collie/etc-overrides/security-faillock.conf" ;;
       'etc/nsswitch.conf')
-        mv "$pkgdir/$path" "$pkgdir/usr/share/omarchy/etc-overrides/nsswitch.conf" ;;
+        mv "$pkgdir/$path" "$pkgdir/usr/share/collie/etc-overrides/nsswitch.conf" ;;
       'etc/cups/cups-browsed.conf')
-        mv "$pkgdir/$path" "$pkgdir/usr/share/omarchy/etc-overrides/cups-cups-browsed.conf" ;;
+        mv "$pkgdir/$path" "$pkgdir/usr/share/collie/etc-overrides/cups-cups-browsed.conf" ;;
       'etc/cups/cups-files.conf')
-        [[ ! -f $pkgdir/$path ]] || mv "$pkgdir/$path" "$pkgdir/usr/share/omarchy/etc-overrides/cups-cups-files.conf" ;;
+        [[ ! -f $pkgdir/$path ]] || mv "$pkgdir/$path" "$pkgdir/usr/share/collie/etc-overrides/cups-cups-files.conf" ;;
       'etc/plymouth/plymouthd.conf')
-        mv "$pkgdir/$path" "$pkgdir/usr/share/omarchy/etc-overrides/plymouth-plymouthd.conf" ;;
+        mv "$pkgdir/$path" "$pkgdir/usr/share/collie/etc-overrides/plymouth-plymouthd.conf" ;;
     esac
   done
   # The directories under /etc we just emptied are upstream-owned; remove our
@@ -423,97 +423,97 @@ EOF
     done
   fi
 
-  # default/** ships to /usr/share/omarchy/default/. The Snapper template is
+  # default/** ships to /usr/share/collie/default/. The Snapper template is
   # additionally installed to /etc/snapper/config-templates/ for the standard
   # Snapper template location; Omarchy target setup copies the default into the
   # live root config.
-  install -d "$pkgdir/usr/share/omarchy/default"
-  cp -a default/. "$pkgdir/usr/share/omarchy/default/"
+  install -d "$pkgdir/usr/share/collie/default"
+  cp -a default/. "$pkgdir/usr/share/collie/default/"
   # Snapper config template used by the install-time `snapper create-config`.
   install -Dm644 default/snapper/root \
-    "$pkgdir/etc/snapper/config-templates/omarchy"
+    "$pkgdir/etc/snapper/config-templates/collie"
 
   # SDDM theme/session assets. These are static package-owned files; the
   # installer only writes autologin.conf because that embeds the install user.
   install -d -m 0755 "$pkgdir/usr/share/sddm/themes"
-  cp -a default/sddm/omarchy "$pkgdir/usr/share/sddm/themes/"
-  find "$pkgdir/usr/share/sddm/themes/omarchy" -type d -exec chmod 0755 {} +
-  find "$pkgdir/usr/share/sddm/themes/omarchy" -type f -exec chmod 0644 {} +
+  cp -a default/sddm/collie "$pkgdir/usr/share/sddm/themes/"
+  find "$pkgdir/usr/share/sddm/themes/collie" -type d -exec chmod 0755 {} +
+  find "$pkgdir/usr/share/sddm/themes/collie" -type f -exec chmod 0644 {} +
   install -Dm644 default/sddm/hyprland.lua "$pkgdir/usr/share/sddm/hyprland.lua"
-  install -Dm644 default/wayland-sessions/omarchy.desktop \
-    "$pkgdir/usr/local/share/wayland-sessions/omarchy.desktop"
+  install -Dm644 default/wayland-sessions/collie.desktop \
+    "$pkgdir/usr/local/share/wayland-sessions/collie.desktop"
 
   # Plymouth theme. Files at 0644, dirs at 0755 (the upstream plymouth
   # package's convention for /usr/share/plymouth/themes/*). cp -a inherits
   # the source dir's mode, which is whatever the build host has — chmod
   # explicitly so installs are consistent regardless of build environment.
-  install -d -m 0755 "$pkgdir/usr/share/plymouth/themes/omarchy"
-  cp -a default/plymouth/. "$pkgdir/usr/share/plymouth/themes/omarchy/"
-  find "$pkgdir/usr/share/plymouth/themes/omarchy" -type d -exec chmod 0755 {} +
-  find "$pkgdir/usr/share/plymouth/themes/omarchy" -type f -exec chmod 0644 {} +
+  install -d -m 0755 "$pkgdir/usr/share/plymouth/themes/collie"
+  cp -a default/plymouth/. "$pkgdir/usr/share/plymouth/themes/collie/"
+  find "$pkgdir/usr/share/plymouth/themes/collie" -type d -exec chmod 0755 {} +
+  find "$pkgdir/usr/share/plymouth/themes/collie" -type f -exec chmod 0644 {} +
 
   # System font.
-  install -Dm644 default/fonts/omarchy/omarchy.ttf "$pkgdir/usr/share/fonts/omarchy/omarchy.ttf"
+  install -Dm644 default/fonts/collie/collie.ttf "$pkgdir/usr/share/fonts/collie/collie.ttf"
 
   # systemd system-sleep hook (lazy-unmounts gvfsd-fuse mounts before
-  # suspend/hibernate). The script also ships under /usr/share/omarchy/default
+  # suspend/hibernate). The script also ships under /usr/share/collie/default
   # via the default/** copy above; we additionally install it to the live
   # systemd path so the hook fires.
   install -Dm755 default/systemd/system-sleep/unmount-fuse \
     "$pkgdir/usr/lib/systemd/system-sleep/unmount-fuse"
 
   # Pacman platform guard: refuses packages tagged for another hardware
-  # platform. It ships here, not in omarchy, so it is resident before the
+  # platform. It ships here, not in collie, so it is resident before the
   # runtime and any hardware package install; the hook, the script it runs and
-  # the script's own copy of the platform detector travel together (omarchy
-  # keeps /usr/bin/omarchy-hw-platform). aarch64 only: no platform package is
+  # the script's own copy of the platform detector travel together (collie
+  # keeps /usr/bin/collie-hw-platform). aarch64 only: no platform package is
   # built for x86_64, so an x86 machine has nothing to guard, and its HOOKS
   # baseline needs no detector. Conditional until the pinned source carries
   # them.
-  if [[ $CARCH == aarch64 && -f default/libalpm/hooks/00-omarchy-platform-guard.hook ]]; then
-    install -Dm644 default/libalpm/hooks/00-omarchy-platform-guard.hook \
-      "$pkgdir/usr/share/libalpm/hooks/00-omarchy-platform-guard.hook"
-    install -Dm755 default/libalpm/scripts/omarchy-platform-guard \
-      "$pkgdir/usr/share/libalpm/scripts/omarchy-platform-guard"
-    install -Dm755 bin/omarchy-hw-platform \
-      "$pkgdir/usr/share/libalpm/scripts/omarchy-hw-platform"
+  if [[ $CARCH == aarch64 && -f default/libalpm/hooks/00-collie-platform-guard.hook ]]; then
+    install -Dm644 default/libalpm/hooks/00-collie-platform-guard.hook \
+      "$pkgdir/usr/share/libalpm/hooks/00-collie-platform-guard.hook"
+    install -Dm755 default/libalpm/scripts/collie-platform-guard \
+      "$pkgdir/usr/share/libalpm/scripts/collie-platform-guard"
+    install -Dm755 bin/collie-hw-platform \
+      "$pkgdir/usr/share/libalpm/scripts/collie-hw-platform"
   fi
 
   # Temporary passwordless sudo: the grant command, its library, the boot
   # cleanup rule from etc/ and the hook that revokes grants before this
   # package changes all live here, so the hook never outlives its Exec target
   # and removing the runtime alone keeps expiry working.
-  for helper in omarchy-sudo-passwordless omarchy-security-functions; do
+  for helper in collie-sudo-passwordless omarchy-security-functions; do
     install -Dm755 "bin/$helper" "$pkgdir/usr/bin/$helper"
-    install -d "$pkgdir/usr/share/omarchy/bin"
-    ln -s "/usr/bin/$helper" "$pkgdir/usr/share/omarchy/bin/$helper"
+    install -d "$pkgdir/usr/share/collie/bin"
+    ln -s "/usr/bin/$helper" "$pkgdir/usr/share/collie/bin/$helper"
   done
-  install -Dm644 default/libalpm/hooks/05-omarchy-passwordless-revoke.hook \
-    "$pkgdir/usr/share/libalpm/hooks/05-omarchy-passwordless-revoke.hook"
+  install -Dm644 default/libalpm/hooks/05-collie-passwordless-revoke.hook \
+    "$pkgdir/usr/share/libalpm/hooks/05-collie-passwordless-revoke.hook"
 
   # Branding assets (logos, icons).
-  install -Dm644 logo.txt "$pkgdir/usr/share/omarchy/logo.txt"
-  install -Dm644 logo.svg "$pkgdir/usr/share/omarchy/logo.svg"
-  install -Dm644 icon.txt "$pkgdir/usr/share/omarchy/icon.txt"
-  install -Dm644 icon.png "$pkgdir/usr/share/omarchy/icon.png"
+  install -Dm644 logo.txt "$pkgdir/usr/share/collie/logo.txt"
+  install -Dm644 logo.svg "$pkgdir/usr/share/collie/logo.svg"
+  install -Dm644 icon.txt "$pkgdir/usr/share/collie/icon.txt"
+  install -Dm644 icon.png "$pkgdir/usr/share/collie/icon.png"
 
-  # Standard icon-theme locations so os-release's LOGO=omarchy resolves in
+  # Standard icon-theme locations so os-release's LOGO=collie resolves in
   # desktop/system-info tools that use the freedesktop icon lookup rules.
-  install -Dm644 icon.png "$pkgdir/usr/share/pixmaps/omarchy.png"
-  install -Dm644 icon.png "$pkgdir/usr/share/icons/hicolor/256x256/apps/omarchy.png"
+  install -Dm644 icon.png "$pkgdir/usr/share/pixmaps/collie.png"
+  install -Dm644 icon.png "$pkgdir/usr/share/icons/hicolor/256x256/apps/collie.png"
 
   # Seed the user-editable branding files into /etc/skel so fresh users
-  # have working defaults for `omarchy screensaver` and the About screen
-  # from the moment they're created. omarchy-reinstall-configs refreshes
-  # these from the /usr/share/omarchy/ sources for existing users.
-  install -Dm644 logo.txt "$pkgdir/etc/skel/.config/omarchy/branding/screensaver.txt"
-  install -Dm644 icon.txt "$pkgdir/etc/skel/.config/omarchy/branding/about.txt"
+  # have working defaults for `collie screensaver` and the About screen
+  # from the moment they're created. collie-reinstall-configs refreshes
+  # these from the /usr/share/collie/ sources for existing users.
+  install -Dm644 logo.txt "$pkgdir/etc/skel/.config/collie/branding/screensaver.txt"
+  install -Dm644 icon.txt "$pkgdir/etc/skel/.config/collie/branding/about.txt"
 
   # Other static per-user defaults seeded via /etc/skel for new users.
-  # omarchy-finalize-user no longer copies these into $HOME; existing users
-  # resync via omarchy-reinstall-configs.
+  # collie-finalize-user no longer copies these into $HOME; existing users
+  # resync via collie-reinstall-configs.
   install -Dm644 default/hypr/toggles/flags.lua \
-    "$pkgdir/etc/skel/.local/state/omarchy/toggles/hypr/flags.lua"
+    "$pkgdir/etc/skel/.local/state/collie/toggles/hypr/flags.lua"
   install -Dm644 default/nautilus-python/extensions/localsend.py \
     "$pkgdir/etc/skel/.local/share/nautilus-python/extensions/localsend.py"
   install -Dm644 default/nautilus-python/extensions/transcode.py \
@@ -523,9 +523,9 @@ EOF
   install -Dm644 default/tensaku/state.toml \
     "$pkgdir/etc/skel/.local/state/tensaku/state.toml"
 
-  # Support binaries needed before the full omarchy package is installed
+  # Support binaries needed before the full collie package is installed
   # (used by ISO/recovery flows).
-  install -Dm755 bin/omarchy-upload-log "$pkgdir/usr/bin/omarchy-upload-log"
-  install -Dm755 bin/omarchy-debug      "$pkgdir/usr/bin/omarchy-debug"
-  install -Dm755 bin/omarchy-debug-idle "$pkgdir/usr/bin/omarchy-debug-idle"
+  install -Dm755 bin/collie-upload-log "$pkgdir/usr/bin/collie-upload-log"
+  install -Dm755 bin/collie-debug      "$pkgdir/usr/bin/collie-debug"
+  install -Dm755 bin/collie-debug-idle "$pkgdir/usr/bin/collie-debug-idle"
 }
