@@ -53,6 +53,7 @@ jobs:
               useradd -m -s /bin/bash builder
               mkdir -p /repo/pkgbuilds /repo/out /home/builder/.gnupg
               chmod 700 /home/builder/.gnupg
+              chown -R builder:builder /home/builder/.gnupg
               printf "%s" "$COLLIE_GPG_PRIVATE_KEY" | su builder -c "HOME=/home/builder gpg --batch --import"
 
               packages="collie-keyring collie-nvim collie-screensaver shear tally snip"
