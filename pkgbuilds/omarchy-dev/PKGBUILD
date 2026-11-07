@@ -78,21 +78,21 @@ makedepends=(
   'git'
 )
 
-# Source: the pinned quattro commit. Set OMARCHY_SRC=/path/to/checkout to
+# Source: the pinned quattro commit. Set COLLIE_SRC=/path/to/checkout to
 # build from a local source tree instead (mirrors omarchy-zsh/omarchy-fish DX);
 # the arrays are emptied below so nothing is downloaded in that case.
 source=("collie::git+https://github.com/collielinux/collie.git#commit=${_commit}")
 sha256sums=('c26058a026bdb0614505e966c1c54d7bd50ac462f72085002a222ddc29358dd3')
-if [[ -n "${OMARCHY_SRC:-}" ]]; then
+if [[ -n "${COLLIE_SRC:-}" ]]; then
   source=()
   sha256sums=()
 fi
 
 prepare() {
-  if [[ -n "${OMARCHY_SRC:-}" ]]; then
+  if [[ -n "${COLLIE_SRC:-}" ]]; then
     rm -rf "$srcdir/collie"
     mkdir -p "$srcdir/collie"
-    cp -a "${OMARCHY_SRC}/." "$srcdir/collie/"
+    cp -a "${COLLIE_SRC}/." "$srcdir/collie/"
   fi
 }
 

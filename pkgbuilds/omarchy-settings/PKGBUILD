@@ -128,9 +128,9 @@ _etc_override_paths=(
   'etc/plymouth/plymouthd.conf'
 )
 
-# Source: the pinned release commit; set OMARCHY_SRC=/path/to/checkout to
+# Source: the pinned release commit; set COLLIE_SRC=/path/to/checkout to
 # build from a local source tree instead (mirrors omarchy-zsh/omarchy-fish DX).
-if [[ -n "${OMARCHY_SRC:-}" ]]; then
+if [[ -n "${COLLIE_SRC:-}" ]]; then
   source=()
   sha256sums=()
 else
@@ -139,10 +139,10 @@ else
 fi
 
 prepare() {
-  if [[ -n "${OMARCHY_SRC:-}" ]]; then
+  if [[ -n "${COLLIE_SRC:-}" ]]; then
     rm -rf "$srcdir/collie"
     mkdir -p "$srcdir/collie"
-    cp -a "${OMARCHY_SRC}/." "$srcdir/collie/"
+    cp -a "${COLLIE_SRC}/." "$srcdir/collie/"
   fi
 }
 
