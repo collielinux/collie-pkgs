@@ -10,7 +10,7 @@ depends=('qt6-base' 'qt6-declarative' 'qt6-multimedia' 'qt6-imageformats'
          'xdg-desktop-portal' 'ffmpeg' 'ffmpegthumbnailer' 'poppler' 'wl-clipboard'
          'xdg-utils')
 optdepends=('darktable: develop camera RAW photos'
-            'omacut: trim recordings'
+            'colliecut: trim recordings'
             'sushi: open PDF documents'
             'imagemagick: read photo dates and technical details'
             'tensaku: annotate screenshots'
