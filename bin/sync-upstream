@@ -796,29 +796,29 @@ EOF
   printf 'pkgver=1.10.0\npkgrel=1\nsha256sums_x86_64=("old")\nsha256sums_aarch64=("old")\n' > "$debpkg/PKGBUILD"
   check "checked-in Debian version avoids source downloads" "{}" "$(debian_upstream_release "$debpkg" | jq -c .)"
 
-  echo "End-to-end Debian sync with the checked-in 1password recipe:"
-  local one_root="$TEMP_DIR/e2e-1password" one_dir one_version=8.12.35
+  echo "End-to-end Debian sync with the checked-in claude-desktop recipe:"
+  local one_root="$TEMP_DIR/e2e-claude-desktop" one_dir one_version=8.12.35
   mkdir -p "$one_root"
-  cp -a "$BUILD_ROOT/pkgbuilds/1password" "$one_root/1password"
-  one_dir="$one_root/1password"
+  cp -a "$BUILD_ROOT/pkgbuilds/claude-desktop" "$one_root/claude-desktop"
+  one_dir="$one_root/claude-desktop"
   # Keep the real recipe shape, but make the fixture's starting version stable.
   # Otherwise a routine package update can outrun the mocked release below.
-  sed -i -e 's/^pkgver=.*/pkgver=8.12.34/' -e 's/^pkgrel=.*/pkgrel=2/' "$one_dir/PKGBUILD"
+  sed -i '' -e 's/^pkgver=.*/pkgver=8.12.34/' -e 's/^pkgrel=.*/pkgrel=2/' "$one_dir/PKGBUILD" 2>/dev/null || sed -i -e 's/^pkgver=.*/pkgver=8.12.34/' -e 's/^pkgrel=.*/pkgrel=2/' "$one_dir/PKGBUILD"
   debian_fetch_packages() {
-    printf 'Package: 1password\nVersion: %s\n' "$one_version"
+    printf 'Package: claude-desktop\nVersion: %s\n' "$one_version"
   }
   upstream_fetch_source() { printf 'remote fixture for %s\n' "$1" > "$2"; }
   local one_prev_updated=$UPDATED one_prev_failed=$FAILED
-  PKGBUILDS_DIR="$one_root" sync_package 1password >/dev/null 2>&1 || true
-  check "1password sync updates without failures" "updated=1 failed=0" \
+  PKGBUILDS_DIR="$one_root" sync_package claude-desktop >/dev/null 2>&1 || true
+  check "claude-desktop sync updates without failures" "updated=1 failed=0" \
     "updated=$((UPDATED - one_prev_updated)) failed=$((FAILED - one_prev_failed))"
-  check "1password pkgver is the single download version source" "$one_version" \
+  check "claude-desktop pkgver is the single download version source" "$one_version" \
     "$(grep -m1 '^pkgver=' "$one_dir/PKGBUILD" | cut -d= -f2-)"
-  check "1password pkgrel resets to 1" "1" \
+  check "claude-desktop pkgrel resets to 1" "1" \
     "$(grep -m1 '^pkgrel=' "$one_dir/PKGBUILD" | cut -d= -f2-)"
-  check "1password x86 URL follows the rewritten pkgver" "1password-${one_version}.x64.tar.gz" \
+  check "claude-desktop x86 URL follows the rewritten pkgver" "claude-desktop_${one_version}_amd64.deb" \
     "$(CARCH=x86_64 bash -c 'source "$1"; basename "${source_x86_64[0]}"' _ "$one_dir/PKGBUILD")"
-  check "1password ARM URL follows the rewritten pkgver" "1password-${one_version}.arm64.tar.gz" \
+  check "claude-desktop ARM URL follows the rewritten pkgver" "claude-desktop_${one_version}_arm64.deb" \
     "$(CARCH=aarch64 bash -c 'source "$1"; basename "${source_aarch64[0]}"' _ "$one_dir/PKGBUILD")"
 
   echo "Quarantine backstop:"

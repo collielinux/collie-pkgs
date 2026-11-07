@@ -137,8 +137,6 @@ jobs:
               ./tests/build-matrix.sh
               ./tests/mac-installer-dispatch.sh
               ./tests/limine-mkinitcpio-hook.sh
-              ./tests/voxtype-bin-install.sh
-              ./tests/1password-polkit-owners.sh
               ./tests/superwhisper-bin-install.sh
               pacman -S --noconfirm --quiet rclone >/dev/null
               ./tests/publish-artifact.sh

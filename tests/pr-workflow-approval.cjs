@@ -461,7 +461,7 @@ test('auto-merge accepts the test a package PR brings, and nothing else outside 
   const wiring = patch => ({ filename: '.github/workflows/test.yml', status: 'modified', patch });
   const newTest = { filename: 'tests/superwhisper-bin-install.sh', status: 'added' };
   // #854's shape: package files, a new test, and one line in test.yml running it.
-  const adds = '@@ -67,6 +67,7 @@ jobs:\n               ./tests/voxtype-bin-install.sh\n+              ./tests/superwhisper-bin-install.sh\n               pacman -S --noconfirm --quiet rclone >/dev/null';
+  const adds = '@@ -67,6 +67,7 @@ jobs:\n               ./tests/limine-mkinitcpio-hook.sh\n+              ./tests/superwhisper-bin-install.sh\n               pacman -S --noconfirm --quiet rclone >/dev/null';
   assert.equal(check([...packageFiles, newTest, wiring(adds)]), true);
   // An existing test can run on master with write access; editing it is not a package change.
   assert.equal(check([...packageFiles, { filename: 'tests/build-isolation.sh', status: 'modified' }]), false);

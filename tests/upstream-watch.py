@@ -427,7 +427,7 @@ os.execv(os.environ['REAL_GIT'], ['git', *args])
 
     def test_vendor_feeds_preserve_version_schemes(self):
         cases = [
-            ('1password-beta', 'Package: unrelated\nVersion: 99.0\n\nPackage: 1password\nVersion: 8.12.38~25.BETA\n', '8.12.38_25.BETA'),
+            ('claude-desktop', 'Package: unrelated\nVersion: 99.0\n\nPackage: claude-desktop\nVersion: 8.12.38~25.BETA\n', '8.12.38_25.BETA'),
             ('spotify', 'Package: spotify-client\nVersion: 1:1.2.96.518.g366879e1\n', '1.2.96.518'),
             ('typora', 'Package: typora\nVersion: 1.12.6-1\n\nPackage: typora\nVersion: 1.9.0-1\n', '1.12.6'),
             ('nvidia-580xx-utils', '<a href="580.159.04/">580.159.04/</a> <a href="590.1/">590.1/</a>', '580.159.04'),
@@ -569,7 +569,7 @@ class T3CodeHookTest(unittest.TestCase):
 
     def run_hook(self):
         return subprocess.run(
-            ['bash', str(ROOT / 'pkgbuilds/t3code-bin/.omarchy/upstream.sh')],
+            ['bash', str(ROOT / 'pkgbuilds/spotify/.omarchy/upstream.sh')],
             cwd=self.root, env=self.env, text=True, capture_output=True,
         )
 

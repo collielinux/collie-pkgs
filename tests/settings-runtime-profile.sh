@@ -1,5 +1,5 @@
 #!/bin/bash
-# Run the omarchy-settings and omarchy-settings-dev recipes' package() against
+# Run the collie-settings and collie-settings-dev recipes' package() against
 # synthetic source trees: an older source keeps today's per-architecture
 # package, and a source that selects its platform profile at runtime ships the
 # same files, backup and optdepends on aarch64 as on x86_64.
@@ -17,61 +17,60 @@ fail() {
 
 files=(
   applications/example.desktop
-  bin/omarchy-debug
-  bin/omarchy-debug-idle
-  bin/omarchy-hw-platform
-  bin/omarchy-security-functions
-  bin/omarchy-sudo-passwordless
-  bin/omarchy-upload-log
+  bin/collie-debug
+  bin/collie-debug-idle
+  bin/collie-hw-platform
+  bin/collie-security-functions
+  bin/collie-sudo-passwordless
+  bin/collie-upload-log
   config/autostart/limine-snapper-notify.desktop
   config/hypr/hyprland.lua
   default/applications/mimeapps.list
   default/bashrc
-  default/environment.d/10-omarchy-fcitx.conf
-  default/fontconfig/conf.avail/50-omarchy.conf
-  default/fonts/omarchy/omarchy.ttf
-  default/libalpm/hooks/05-omarchy-passwordless-revoke.hook
+  default/environment.d/10-collie-fcitx.conf
+  default/fontconfig/conf.avail/50-collie.conf
+  default/fonts/collie/collie.ttf
+  default/libalpm/hooks/05-collie-passwordless-revoke.hook
   default/hypr/toggles/flags.lua
-  default/libalpm/hooks/00-omarchy-platform-guard.hook
-  default/libalpm/scripts/omarchy-platform-guard
+  default/libalpm/hooks/00-collie-platform-guard.hook
+  default/libalpm/scripts/collie-platform-guard
   default/limine/default.conf
   default/limine/limine.conf
-  default/nautilus-python/extensions/localsend.py
   default/nautilus-python/extensions/transcode.py
-  default/plymouth/omarchy.plymouth
+  default/plymouth/collie.plymouth
   default/sddm/hyprland.lua
-  default/sddm/omarchy/Main.qml
+  default/sddm/collie/Main.qml
   default/snapper/root
   default/systemd/system-sleep/unmount-fuse
-  default/systemd/system/plocate-updatedb.service.d/10-omarchy.conf
+  default/systemd/system/plocate-updatedb.service.d/10-collie.conf
   default/systemd/user/app.slice.d/10-oomd.conf
   default/systemd/user/bt-agent.service
-  default/systemd/user/omarchy-crash-watch.service
-  default/systemd/user/omarchy-fcitx5.service
-  default/systemd/user/omarchy-migrate-notify.service
-  default/systemd/user/omarchy-recover-internal-monitor.service
-  default/systemd/user/omarchy-sleep-lock.service
-  default/systemd/user/omarchy-tailscale-receive.service
-  default/systemd/zram-generator.conf.d/90-omarchy.conf
+  default/systemd/user/collie-crash-watch.service
+  default/systemd/user/collie-fcitx5.service
+  default/systemd/user/collie-migrate-notify.service
+  default/systemd/user/collie-recover-internal-monitor.service
+  default/systemd/user/collie-sleep-lock.service
+  default/systemd/user/collie-tailscale-receive.service
+  default/systemd/zram-generator.conf.d/90-collie.conf
   default/tensaku/state.toml
-  default/uwsm/env.d/10-omarchy
-  default/wayland-sessions/omarchy.desktop
+  default/uwsm/env.d/10-collie
+  default/wayland-sessions/collie.desktop
   default/xdg-terminal-exec/hyprland-xdg-terminals.list
   etc/cups/cups-browsed.conf
   etc/cups/cups-files.conf
   etc/fastfetch/config.jsonc
-  etc/limine-entry-tool.d/omarchy-defaults.conf
-  etc/limine-entry-tool.d/omarchy-uki.conf
-  etc/mkinitcpio.conf.d/omarchy_hooks.conf
+  etc/limine-entry-tool.d/collie-defaults.conf
+  etc/limine-entry-tool.d/collie-uki.conf
+  etc/mkinitcpio.conf.d/collie_hooks.conf
   etc/mkinitcpio.conf.d/thunderbolt_module.conf
-  etc/modprobe.d/omarchy-usb-autosuspend.conf
+  etc/modprobe.d/collie-usb-autosuspend.conf
   etc/nsswitch.conf
   etc/plymouth/plymouthd.conf
   etc/security/faillock.conf
-  etc/sysctl.d/99-omarchy-sysctl.conf
-  etc/systemd/oomd.conf.d/10-omarchy.conf
+  etc/sysctl.d/99-collie-sysctl.conf
+  etc/systemd/oomd.conf.d/10-collie.conf
   etc/systemd/zram-generator.conf
-  etc/tmpfiles.d/omarchy-zswap.conf
+  etc/tmpfiles.d/collie-zswap.conf
   icon.png
   icon.txt
   logo.svg
@@ -81,29 +80,29 @@ files=(
 # drop-ins ship on both (collielinux/collie-pkgs#380).
 legacy_aarch64_absent=(
   etc/mkinitcpio.conf.d/thunderbolt_module.conf
-  etc/modprobe.d/omarchy-usb-autosuspend.conf
-  etc/systemd/oomd.conf.d/10-omarchy.conf
+  etc/modprobe.d/collie-usb-autosuspend.conf
+  etc/systemd/oomd.conf.d/10-collie.conf
   etc/systemd/zram-generator.conf
-  etc/tmpfiles.d/omarchy-zswap.conf
+  etc/tmpfiles.d/collie-zswap.conf
   usr/lib/systemd/user/app.slice.d/10-oomd.conf
-  usr/lib/systemd/zram-generator.conf.d/90-omarchy.conf
+  usr/lib/systemd/zram-generator.conf.d/90-collie.conf
 )
 x86_backup=(
   etc/mkinitcpio.conf.d/thunderbolt_module.conf
-  etc/modprobe.d/omarchy-usb-autosuspend.conf
-  etc/systemd/oomd.conf.d/10-omarchy.conf
+  etc/modprobe.d/collie-usb-autosuspend.conf
+  etc/systemd/oomd.conf.d/10-collie.conf
   etc/systemd/zram-generator.conf
 )
-keyboard_unit=default/systemd/user/omarchy-brightness-keyboard-auto.service
+keyboard_unit=default/systemd/user/collie-brightness-keyboard-auto.service
 nvpcr_dropins=(
-  default/systemd/system/systemd-tpm2-setup-early.service.d/10-omarchy-nvpcr.conf
-  default/systemd/system/systemd-pcrproduct.service.d/10-omarchy-nvpcr.conf
-  default/systemd/system/systemd-pcrlogin@.service.d/10-omarchy-nvpcr.conf
+  default/systemd/system/systemd-tpm2-setup-early.service.d/10-collie-nvpcr.conf
+  default/systemd/system/systemd-pcrproduct.service.d/10-collie-nvpcr.conf
+  default/systemd/system/systemd-pcrlogin@.service.d/10-collie-nvpcr.conf
 )
 platform_guard=(
-  usr/share/libalpm/hooks/00-omarchy-platform-guard.hook
-  usr/share/libalpm/scripts/omarchy-hw-platform
-  usr/share/libalpm/scripts/omarchy-platform-guard
+  usr/share/libalpm/hooks/00-collie-platform-guard.hook
+  usr/share/libalpm/scripts/collie-hw-platform
+  usr/share/libalpm/scripts/collie-platform-guard
 )
 
 # $1: source tree. Extra arguments are files to add to it.
@@ -127,7 +126,7 @@ package_as() {
     [[ $mode == "pinned" ]] || export OMARCHY_SRC=$tree
     export CARCH=$carch srcdir=$scratch/$name-src pkgdir=$scratch/$name
     mkdir -p "$srcdir" "$pkgdir"
-    ln -sfn "$tree" "$srcdir/omarchy"
+    ln -sfn "$tree" "$srcdir/collie"
     backup=()
     # shellcheck disable=SC1090 # Exercise the recipe's own package function.
     source "$BUILD_ROOT/pkgbuilds/$recipe/PKGBUILD"
@@ -146,11 +145,11 @@ in_list() {
 
 fixtures=$BUILD_ROOT/tests/fixtures/settings-boot
 make_source "$scratch/legacy"
-cp "$fixtures/omarchy_hooks-v4.0.4.conf" "$scratch/legacy/etc/mkinitcpio.conf.d/omarchy_hooks.conf"
+cp "$fixtures/collie_hooks-v4.0.4.conf" "$scratch/legacy/etc/mkinitcpio.conf.d/collie_hooks.conf"
 make_source "$scratch/profile" default/settings-runtime-profile "$keyboard_unit" "${nvpcr_dropins[@]}"
-cp "$fixtures"/omarchy-13362/*.conf "$scratch/profile/etc/mkinitcpio.conf.d/"
+cp "$fixtures"/collie-13362/*.conf "$scratch/profile/etc/mkinitcpio.conf.d/"
 
-for recipe in omarchy-settings omarchy-settings-dev; do
+for recipe in collie-settings collie-settings-dev; do
   rm -rf "${scratch:?}"/legacy-* "${scratch:?}"/profile-*
   # An older source keeps the per-architecture package it has always had.
   package_as "$recipe" "$scratch/legacy" x86_64 legacy-x86_64 pinned
@@ -162,24 +161,24 @@ for recipe in omarchy-settings omarchy-settings-dev; do
   missing=$(comm -23 "$scratch/legacy-x86_64.files" "$scratch/legacy-aarch64.files")
   [[ $missing == "$(printf '%s\n' "${legacy_aarch64_absent[@]}" | sort)" ]] ||
     fail "older source's aarch64 package differs from x86_64 only by the boot and memory drop-ins" "$missing"
-  grep -Fxq 'if [[ " ${HOOKS[*]:-} " != *" asahi "* ]]; then' "$scratch/legacy-aarch64/etc/mkinitcpio.conf.d/omarchy_hooks.conf" ||
+  grep -Fxq 'if [[ " ${HOOKS[*]:-} " != *" asahi "* ]]; then' "$scratch/legacy-aarch64/etc/mkinitcpio.conf.d/collie_hooks.conf" ||
     fail "older source's aarch64 HOOKS line applies only without asahi"
-  cmp -s "$scratch/legacy/etc/mkinitcpio.conf.d/omarchy_hooks.conf" "$scratch/legacy-x86_64/etc/mkinitcpio.conf.d/omarchy_hooks.conf" ||
+  cmp -s "$scratch/legacy/etc/mkinitcpio.conf.d/collie_hooks.conf" "$scratch/legacy-x86_64/etc/mkinitcpio.conf.d/collie_hooks.conf" ||
     fail 'x86_64 ships the source HOOKS line as it is'
-  cmp -s "$scratch/legacy/etc/sysctl.d/99-omarchy-sysctl.conf" "$scratch/legacy-x86_64/etc/sysctl.d/99-omarchy-sysctl.conf" ||
+  cmp -s "$scratch/legacy/etc/sysctl.d/99-collie-sysctl.conf" "$scratch/legacy-x86_64/etc/sysctl.d/99-collie-sysctl.conf" ||
     fail 'x86_64 ships the source sysctl file'
-  [[ $(grep -v '^#' "$scratch/legacy-aarch64/etc/sysctl.d/99-omarchy-sysctl.conf") == net.ipv4.tcp_mtu_probing=1 ]] ||
+  [[ $(grep -v '^#' "$scratch/legacy-aarch64/etc/sysctl.d/99-collie-sysctl.conf") == net.ipv4.tcp_mtu_probing=1 ]] ||
     fail 'older source keeps only the network tuning on aarch64'
   for path in "${x86_backup[@]}"; do
     in_list "$path" "$scratch/legacy-x86_64.backup" || fail "x86_64 backs up $path"
     ! in_list "$path" "$scratch/legacy-aarch64.backup" || fail "older source's aarch64 backup leaves out $path"
   done
-  for path in etc/mkinitcpio.conf.d/omarchy_hooks.conf etc/limine-entry-tool.d/omarchy-defaults.conf; do
+  for path in etc/mkinitcpio.conf.d/collie_hooks.conf etc/limine-entry-tool.d/collie-defaults.conf; do
     in_list "$path" "$scratch/legacy-aarch64.backup" || fail "older source's aarch64 package backs up $path"
   done
   grep -q '^limine:' "$scratch/legacy-x86_64.optdepends" || fail 'x86_64 suggests the boot stack its drop-ins are for'
   ! grep -q '^limine:' "$scratch/legacy-aarch64.optdepends" || fail "older source's aarch64 package suggests no boot stack"
-  ! in_list usr/lib/systemd/user/omarchy-brightness-keyboard-auto.service "$scratch/legacy-x86_64.files" ||
+  ! in_list usr/lib/systemd/user/collie-brightness-keyboard-auto.service "$scratch/legacy-x86_64.files" ||
     fail 'a source without the keyboard unit ships none'
   ! grep -q 'nvpcr' "$scratch/legacy-x86_64.files" ||
     fail 'a source without the NvPCR drop-ins ships none'
@@ -209,20 +208,20 @@ for recipe in omarchy-settings omarchy-settings-dev; do
     fail 'runtime-profile source backs up the same files on both architectures'
   cmp -s "$scratch/profile-x86_64.optdepends" "$scratch/profile-aarch64.optdepends" ||
     fail 'runtime-profile source has the same optdepends on both architectures'
-  in_list etc/mkinitcpio.conf.d/00-omarchy-hooks.conf "$scratch/profile-x86_64.backup" ||
+  in_list etc/mkinitcpio.conf.d/00-collie-hooks.conf "$scratch/profile-x86_64.backup" ||
     fail 'the HOOKS baseline drop-in is backed up where the source has it'
-  in_list usr/lib/systemd/user/omarchy-brightness-keyboard-auto.service "$scratch/profile-aarch64.files" ||
+  in_list usr/lib/systemd/user/collie-brightness-keyboard-auto.service "$scratch/profile-aarch64.files" ||
     fail 'the keyboard unit first-run enables ships when the source has it'
   for dropin in "${nvpcr_dropins[@]}"; do
     in_list "usr/lib/${dropin#default/}" "$scratch/profile-aarch64.files" ||
       fail 'the NvPCR drop-ins ship when the source has them'
   done
   comm -13 "$scratch/legacy-x86_64.files" "$scratch/profile-x86_64.files" >"$scratch/added"
-  for conf in 00-omarchy-hooks.conf omarchy_hooks.conf; do
-    cmp -s "$fixtures/omarchy-13362/$conf" "$scratch/profile-aarch64/etc/mkinitcpio.conf.d/$conf" ||
+  for conf in 00-collie-hooks.conf collie_hooks.conf; do
+    cmp -s "$fixtures/collie-13362/$conf" "$scratch/profile-aarch64/etc/mkinitcpio.conf.d/$conf" ||
       fail "runtime-profile source ships its $conf as it is on aarch64"
   done
-  [[ $(cat "$scratch/added") == "$(printf '%s\n' usr/lib/systemd/user/omarchy-brightness-keyboard-auto.service usr/share/omarchy/default/settings-runtime-profile "usr/share/omarchy/$keyboard_unit" etc/mkinitcpio.conf.d/00-omarchy-hooks.conf "${nvpcr_dropins[@]/#default/usr/lib}" "${nvpcr_dropins[@]/#/usr/share/omarchy/}" | sort)" ]] ||
+  [[ $(cat "$scratch/added") == "$(printf '%s\n' usr/lib/systemd/user/collie-brightness-keyboard-auto.service usr/share/collie/default/settings-runtime-profile "usr/share/collie/$keyboard_unit" etc/mkinitcpio.conf.d/00-collie-hooks.conf "${nvpcr_dropins[@]/#default/usr/lib}" "${nvpcr_dropins[@]/#/usr/share/collie/}" | sort)" ]] ||
     fail 'x86_64 gains only the new source files from a runtime-profile source' "$(cat "$scratch/added")"
   echo "PASS: $recipe: a runtime-profile source ships the full set on aarch64"
 done
