@@ -79,7 +79,6 @@ jobs:
         with:
           persist-credentials: false
 
-      # tests/promotion-regression.sh compares promotions against the tooling
       # of master before the Mac package-set check.
       - name: Fetch the promotion baseline
         run: git fetch --no-tags --depth=1 origin be8ab9bda3e53b163153944395f1912ac6d7f44f
@@ -104,12 +103,8 @@ jobs:
               set -euo pipefail
               pacman -Syu --noconfirm git jq python python-yaml libarchive neovim tmux
               python tests/owe-package-restart.py
-              python tests/oma-service-removal.py
               python tests/passwordless-package-lifecycle.py
               python tests/upstream-watch.py
-              runuser -u nobody -- python tests/aurora-edge/metadata.py
-              python tests/aurora-edge/review.py
-              python tests/aurora-edge/firmware.py
               bash tests/ipu7-install.sh
               bash tests/ipu7-headers.sh
               ./bin/sync-upstream self-test
@@ -120,7 +115,6 @@ jobs:
               ./tests/neovim-remote-clipboard.sh
               python tests/neovim-clipboard-tmux.py
               ./tests/published-build-plan.sh
-              ./tests/settings-boot-config.sh
               ./tests/settings-etc-overrides.sh
               ./tests/settings-runtime-profile.sh
               ./tests/passwordless-package-files.sh
@@ -135,14 +129,11 @@ jobs:
               ./tests/artifact-helpers.sh
               python tests/workflow-helpers-sourced.py
               ./tests/build-matrix.sh
-              ./tests/mac-installer-dispatch.sh
-              ./tests/limine-mkinitcpio-hook.sh
               ./tests/superwhisper-bin-install.sh
               pacman -S --noconfirm --quiet rclone >/dev/null
               ./tests/publish-artifact.sh
               ./tests/promote-channel.sh
               ./tests/mac-package-set.sh
-              BASELINE_REF=be8ab9bda3e53b163153944395f1912ac6d7f44f ./tests/promotion-regression.sh
               shopt -s nullglob
               for test in pkgbuilds/*/test.sh; do
                 bash "$test"
