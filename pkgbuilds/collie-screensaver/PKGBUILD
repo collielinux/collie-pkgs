@@ -1,0 +1,36 @@
+# Maintainer: Collie
+
+pkgname=collie-screensaver
+pkgver=1.4.0
+pkgrel=1
+pkgdesc='Native Wayland screensaver for Collie'
+arch=('x86_64' 'aarch64')
+url='https://github.com/collielinux/collie-screensaver'
+license=('MIT')
+depends=(
+  'fontconfig'
+  'libxkbcommon'
+  'wayland'
+)
+makedepends=(
+  'cargo'
+  'pkgconf'
+  'wayland'
+  'wayland-protocols'
+)
+options=('!debug')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('5754bb3be78e9bee319cec438c281f37fd149ead245ee73110fc9e1748b00924')
+
+build() {
+  cd "$srcdir/$pkgname-$pkgver"
+  CARGO_TARGET_DIR=target cargo build --release --locked
+}
+
+package() {
+  cd "$srcdir/$pkgname-$pkgver"
+
+  install -Dm755 target/release/collie-screensaver \
+    "$pkgdir/usr/lib/collie-screensaver/collie-screensaver"
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
