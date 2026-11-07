@@ -1,0 +1,23 @@
+# Maintainer: Collie
+
+pkgname=collie-keyring
+pkgver=20261107
+pkgrel=1
+pkgdesc="Collie keyring"
+arch=('any')
+url="https://github.com/collielinux/collie-pkgs"
+license=('GPL-3.0-or-later')
+install=$pkgname.install
+source=("collie.gpg"
+        "collie-revoked"
+        "collie-trusted"
+        "$install")
+
+sha256sums=('d7bfece62e7008b52b7bc50c37c7c48af68c0ffa7d49c23ca1b6ee085024c604'
+            '65f3918cc9ac195a4a87c61f28d357454eb7c332df53815ed8ad7ee6fe034acc'
+            '0129acf886c8c28b78df7b5f2cf9bdcc69748d2139f578675ea3767df8de6e87'
+            '61eac8eb1dcbe3c886dbc07ae0045ff64a91a6b72a7507b0b559fdb1584cc983')
+
+package() {
+    install -D -m0644 -t "${pkgdir}"/usr/share/pacman/keyrings/ 'collie'{.gpg,-trusted,-revoked}
+}
