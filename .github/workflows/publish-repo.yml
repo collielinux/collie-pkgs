@@ -6,8 +6,9 @@ name: Publish package repo
 #
 # Layout produced per arch (matches what pacman expects under
 # [collie] Server = .../collie/$arch):
-#   repo-$arch.tar.gz -> collie.db.tar.gz{,.sig}, collie.files.tar.gz{,.sig},
-#                        *.pkg.tar.zst{,.sig}
+#   repo-$arch.tar.gz -> collie.db{,.sig}, collie.db.tar.gz{,.sig},
+#                        collie.files{,.sig}, collie.files.tar.gz{,.sig},
+#                        *.pkg.tar.zst{,.sig} (aarch64 may emit .pkg.tar.xz)
 
 on:
   workflow_dispatch:
@@ -107,9 +108,9 @@ jobs:
               # ARM emits .pkg.tar.xz where x86 emits .pkg.tar.zst.
               GNUPGHOME=/repo/gnupg repo-add -s -k "$SIGNING_KEYID" \
                 /repo/out/collie.db.tar.gz ./*.pkg.tar.zst ./*.pkg.tar.xz
-              # repo-add leaves gzip duplicates named collie.db/collie.files;
-              # pacman only ever fetches the .tar.gz forms.
-              rm -f /repo/out/collie.db /repo/out/collie.files
+              # pacman 7 fetches the uncompressed names (collie.db,
+              # collie.files); older pacman takes the .tar.gz forms. repo-add
+              # emits both, byte-identical, with a signature for each.
               # arch=any packages are identical on both arches; every job
               # builds the full set so each repo db lists what it ships.
               mkdir -p "/repo/final/${{ matrix.arch }}"
